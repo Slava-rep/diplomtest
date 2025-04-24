@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Журнал условий среды</title>
+    <style>
+        @page {
+            size: A4 landscape; /* Устанавливает горизонтальную ориентацию */
+            margin: 20mm; /* Поля страницы */
+        }
+        body {
+            font-family: 'DejaVu Sans', Arial, sans-serif;
+            margin: 20px;
+            font-size: 10px; /* Уменьшение размера шрифта */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            font-size: 10px; /* Размер шрифта для таблицы */
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2>Журнал условий среды</h2>
+    <p>Период: {{ start_date|default:"Начало не указано" }} - {{ end_date|default:"Конец не указан" }}</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Дата</th>
+                <th>Температура, °C</th>
+                <th>Влажность, %</th>
+                <th>Давление, кПа</th>
+                <th>Подпись</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in entries %}
+            <tr>
+                <td>{{ entry.measurement_date|date:"d.m.Y" }}</td>
+                <td>{{ entry.affecting_factors.temperature }}</td>
+                <td>{{ entry.affecting_factors.humidity }}</td>
+                <td>{{ entry.affecting_factors.pressure }}</td>
+                <td>{{ entry.affecting_factors.signature }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

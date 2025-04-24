@@ -1,0 +1,63 @@
+<!-- journals/templates/journals/verification_list.html -->
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Журнал регистрации поверки</h2>
+    <form method="get" class="mb-4">
+        <div class="row">
+            <form method="get" class="mb-4">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="start_date">Дата начала:</label>
+                        <input type="date" id="start_date" name="start_date" class="form-control" value="{{ request.GET.start_date }}">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="end_date">Дата окончания:</label>
+                        <input type="date" id="end_date" name="end_date" class="form-control" value="{{ request.GET.end_date }}">
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary">Фильтровать</button>
+                    </div>
+                </div>
+            </form>
+            <div class="d-flex justify-content-end mb-3">
+                <form method="get" action="{% url 'journals:verification_pdf' %}">
+                    <input type="hidden" name="start_date" value="{{ request.GET.start_date }}">
+                    <input type="hidden" name="end_date" value="{{ request.GET.end_date }}">
+                    <button type="submit" class="btn btn-secondary">Сохранить в PDF</button>
+                </form>
+            </div>
+        </div>
+    </form>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>№ п/п</th>
+                <th>Дата поступления</th>
+                <th>Тип СИ</th>
+                <th>Диапазон измерений</th>
+                <th>Погрешность</th>
+                <th>Заводской номер</th>
+                <th>Результат</th>
+                <th>Дата поверки</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in object_list %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ entry.receipt_date|date:"d.m.Y" }}</td>
+                <td>{{ entry.si.type }}</td>
+                <td>{{ entry.si.measurement_range }}</td>
+                <td>{{ entry.error }}</td>
+                <td>{{ entry.si.serial_number }}</td>
+                <td>{{ entry.get_result_display }}</td>
+                <td>{{ entry.verification_date|date:"d.m.Y" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

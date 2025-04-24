@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags static %}
+
+{% block content %}
+<div class="container mt-4">
+    {% if not user.employee.measurement_types.exists %}
+        <div class="alert alert-danger">
+            Вам не назначены виды измерений! Обратитесь к администратору.
+        </div>
+    {% endif %}
+
+    <h2>Создание свидетельства о поверке</h2>
+    
+    <!-- Вкладки -->
+    <ul class="nav nav-tabs mb-4">
+        <li class="nav-item">
+            <a class="nav-link active" href="#main" data-toggle="tab">Основные данные</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#additional" data-toggle="tab">Дополнительно</a>
+        </li>
+    </ul>
+
+    <form method="post" id="certificate-form">
+        {% csrf_token %}
+        
+        <div class="tab-content">
+            <!-- Основные поля -->
+            <div class="tab-pane fade show active" id="main">
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.verification_date|as_crispy_field }}
+                        {{ form.next_verification_date|as_crispy_field }}
+                        {{ form.interval|as_crispy_field }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.si|as_crispy_field }}
+                        {{ form.gov_reg_number|as_crispy_field }}
+                        {{ form.inventory_number|as_crispy_field }}
+                    </div>
+                </div>
+                {{ form.verification_type|as_crispy_field }}
+                {{ form.verification_method|as_crispy_field }}
+            </div>
+
+            <!-- Дополнительные поля -->
+            <div class="tab-pane fade" id="additional">
+                <div class="row">
+                    <div class="col-md-4">
+                        {{ form.modification|as_crispy_field }}
+                        {{ form.previous_verification_mark|as_crispy_field }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.is_vn|as_crispy_field }}
+                        {{ form.mark_in_passport|as_crispy_field }}
+                        {{ form.mark_on_si|as_crispy_field }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ affecting_factors_form.temperature|as_crispy_field }}
+                        {{ affecting_factors_form.humidity|as_crispy_field }}
+                        {{ affecting_factors_form.pressure|as_crispy_field }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ affecting_factors_form.voltage|as_crispy_field }}
+                        {{ affecting_factors_form.frequency|as_crispy_field }}
+                        {{ affecting_factors_form.harmonic_coefficient|as_crispy_field }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ affecting_factors_form.liquid_temperature|as_crispy_field }}
+                        {{ affecting_factors_form.temperature_change|as_crispy_field }}
+                        {{ affecting_factors_form.pressure_change_rate|as_crispy_field }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.protocol|as_crispy_field }} <!-- Поле для загрузки файла -->
+                    </div>
+                </div>
+                {{ form.composition|as_crispy_field }}
+                {{ form.comment|as_crispy_field }}
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    </form>
+    <!-- filepath: c:\diplom\diplomtest\certificates\templates\certificates\create.html -->
+    {% comment %} <h3>Существующие свидетельства</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Номер</th>
+                <th>Дата поверки</th>
+                <th>СИ</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for certificate in existing_certificates %}
+            <tr>
+                <td>{{ certificate.number }}</td>
+                <td>{{ certificate.verification_date|date:"d.m.Y" }}</td>
+                <td>{{ certificate.si }}</td>
+                <td>
+                    <a href="{% url 'certificates:create_from_example' certificate.id %}" class="btn btn-primary btn-sm">
+                        Создать по примеру
+                    </a>
+                    <a href="{% url 'certificates:print' certificate.id %}" class="btn btn-secondary btn-sm">
+                        Печать
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table> {% endcomment %}
+    
+    
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Подключение необходимых скриптов -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="{% static 'js/certificate_form.js' %}"></script>
+<script>
+$(document).ready(function() {
+    // Инициализация Select2 для поиска СИ
+    $('#id_si').select2({
+        placeholder: "Начните вводить номер или название СИ",
+        ajax: {
+            url: '/si/autocomplete/',
+            dataType: 'json',
+            delay: 250,
+            processResults: function(data) {
+                return {
+                    results: data.map(item => ({
+                        id: item.id,
+                        text: `${item.registration_number} - ${item.type__name}`
+                    }))
+                };
+            }
+        }
+    });
+
+    // Автоматический расчет даты окончания
+    $('#id_verification_date, #id_interval').on('change', function() {
+        const startDate = new Date($('#id_verification_date').val());
+        const years = parseInt($('#id_interval').val()) || 1;
+        if (!isNaN(startDate.getTime())) {
+            startDate.setFullYear(startDate.getFullYear() + years);
+            startDate.setDate(startDate.getDate() - 1);
+            $('#id_next_verification_date').val(startDate.toISOString().split('T')[0]);
+        }
+    });
+});
+</script>
+{% endblock %}

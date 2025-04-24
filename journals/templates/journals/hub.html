@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Журналы</h2>
+    <div class="list-group">
+        <a href="{% url 'journals:registration' %}" class="list-group-item list-group-item-action">
+            Журнал регистрации СИ
+        </a>
+        <a href="{% url 'journals:verification' %}" class="list-group-item list-group-item-action">
+            Журнал поверок
+        </a>
+        <a href="{% url 'journals:environment' %}" class="list-group-item list-group-item-action">
+            Журнал условий среды
+        </a>
+    </div>
+</div>
+{% endblock %}

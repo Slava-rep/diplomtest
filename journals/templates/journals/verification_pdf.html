@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Журнал поверок</title>
+    <style>
+        @page {
+            size: A4 landscape; /* Устанавливает горизонтальную ориентацию */
+            margin: 20mm; /* Поля страницы */
+        }
+        body {
+            font-family: 'DejaVu Sans', Arial, sans-serif;
+            margin: 20px;
+            font-size: 10px; /* Уменьшение размера шрифта */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            font-size: 10px; /* Размер шрифта для таблицы */
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2>Журнал поверок</h2>
+    <p>Период: {{ start_date|default:"Начало не указано" }} - {{ end_date|default:"Конец не указан" }}</p>
+    <table>
+        <thead>
+            <tr>
+                <th>№ п/п</th>
+                <th>Дата поступления</th>
+                <th>Тип СИ</th>
+                <th>Диапазон измерений</th>
+                <th>Погрешность</th>
+                <th>Заводской номер</th>
+                <th>Результат</th>
+                <th>Дата поверки</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in entries %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ entry.certificate.receipt_date|date:"d.m.Y" }}</td>
+                <td>{{ entry.si.type }}</td>
+                <td>{{ entry.si.measurement_range }}</td>
+                <td>{{ entry.error }}</td>
+                <td>{{ entry.si.serial }}</td>
+                <td>{{ entry.verification_result }}</td>
+                <td>{{ entry.certificate.verification_date|date:"d.m.Y" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

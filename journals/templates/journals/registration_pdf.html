@@ -1,0 +1,128 @@
+<!-- filepath: c:\diplom\diplomtest\journals\templates\journals\registration_pdf.html -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Журнал регистрации СИ</title>
+    <style>
+        @font-face {
+            font-family: 'DejaVu Sans';
+            src: url('file:///{{ STATIC_ROOT }}/fonts/DejaVuSans.ttf') format('truetype');
+        }
+        {% comment %} @font-face {
+            font-family: 'DejaVu Sans';
+            src: url('{{ STATIC_URL }}fonts/DejaVuSans.ttf') format('truetype');
+        } {% endcomment %}
+        {% comment %} @font-face {
+            font-family: 'DejaVu Sans';
+            src: url('file:///C:/diplom/diplomtest/static/fonts/DejaVuSans.ttf');
+        }   {% endcomment %}
+        {% comment %} @font-face {
+            font-family: 'DejaVu Sans';
+            src: url('{{ STATIC_URL }}fonts/DejaVuSans.ttf');
+        } {% endcomment %}
+        {% comment %} @font-face {
+            font-family: 'DejaVu Sans';
+            src: url('/static/fonts/DejaVuSans.ttf');
+          } {% endcomment %}
+
+        @page {
+            size: A4 landscape; /* Устанавливает горизонтальную ориентацию */
+            margin: 20mm; /* Поля страницы */
+        }
+        body {
+            font-family: 'DejaVu Sans', Arial, sans-serif;
+            margin: 20px;
+            font-size: 10px; /* Уменьшение размера шрифта */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            font-size: 10px; /* Размер шрифта для таблицы */
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2>Журнал регистрации СИ</h2>
+    {% comment %} <p>Период: {{ start_date }} - {{ end_date }}</p> {% endcomment %}
+    <p>Период: {{ start_date|default:"Начало не указано" }} - {{ end_date|default:"Конец не указан" }}</p>
+    <table>
+        <thead>
+            <tr>
+                <th>СИ</th>
+                <th>Дата поступления</th>
+                <th>Подпись</th>
+                <th>Дата выдачи</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in entries %}
+            <tr>
+                <td>{{ entry.si }}</td>
+                <td>{{ entry.receipt_date|date:"d.m.Y" }}</td>
+                <td>{{ entry.receipt_signature }}</td>
+                <td>{{ entry.issue_date|date:"d.m.Y" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
+{% comment %} <!-- filepath: c:\diplom\diplomtest\journals\templates\journals\registration_pdf.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Журнал регистрации СИ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2>Журнал регистрации СИ</h2>
+    <p>Период: {{ start_date }} - {{ end_date }}</p>
+    <table>
+        <thead>
+            <tr>
+                <th>СИ</th>
+                <th>Дата поступления</th>
+                <th>Подпись</th>
+                <th>Дата выдачи</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in entries %}
+            <tr>
+                <td>{{ entry.si }}</td>
+                <td>{{ entry.receipt_date|date:"d.m.Y" }}</td>
+                <td>{{ entry.receipt_signature }}</td>
+                <td>{{ entry.issue_date|date:"d.m.Y" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html> {% endcomment %}
