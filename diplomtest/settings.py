@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-f0fn4y($fjphe#0-tz7q%pgpj&caus8f)#!&ct)g4c6en4-si6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -87,14 +87,27 @@ WSGI_APPLICATION = 'diplomtest.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'vnikti2',      #vnikti
+#         'USER': 'postgres',
+#         'PASSWORD': '1111',
+#         'HOST': '127.0.0.1',
+#         # 'HOST': 'db',
+#         # 'HOST': 'host.docker.internal',  # Доступ к хосту из контейнера
+#         'PORT': '5432',
+#     }
+# }
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'vnikti2',      #vnikti
-        'USER': 'postgres',
-        'PASSWORD': '1111',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'NAME': os.getenv('DATABASE_NAME', 'vnikti2'),  # Имя вашей базы данных
+        'USER': os.getenv('DATABASE_USER', 'postgres'),  # Пользователь PostgreSQL
+        'PASSWORD': os.getenv('DATABASE_PASSWORD', '1111'),  # Пароль PostgreSQL
+        # 'HOST': os.getenv('DATABASE_HOST', '127.0.0.1'),  # Локальный хост
+        'HOST': os.getenv('DATABASE_HOST', 'db'),  # для  docker-compose up --build
+        'PORT': os.getenv('DATABASE_PORT', '5432'),  # Порт PostgreSQL
     }
 }
 
