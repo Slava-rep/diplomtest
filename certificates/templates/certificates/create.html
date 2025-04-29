@@ -1,118 +1,319 @@
+<!-- diplomtest/certificates/templates/certificates/create.html -->
 {% extends "base.html" %}
-{% load crispy_forms_tags static %}
+{% load static %}
+{% load crispy_forms_tags %}
 
 {% block content %}
 <div class="container mt-4">
     {% if not user.employee.measurement_types.exists %}
         <div class="alert alert-danger">
-            Вам не назначены виды измерений! Обратитесь к администратору.
+            <i class="fas fa-exclamation-triangle"></i> Вам не назначены виды измерений! Обратитесь к администратору.
         </div>
     {% endif %}
 
-    <h2>Создание свидетельства о поверке</h2>
-    
-    <!-- Вкладки -->
-    <ul class="nav nav-tabs mb-4">
-        <li class="nav-item">
-            <a class="nav-link active" href="#main" data-toggle="tab">Основные данные</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#additional" data-toggle="tab">Дополнительно</a>
-        </li>
-    </ul>
-
-    <form method="post" id="certificate-form">
-        {% csrf_token %}
-        
-        <div class="tab-content">
-            <!-- Основные поля -->
-            <div class="tab-pane fade show active" id="main">
-                <div class="row">
-                    <div class="col-md-6">
-                        {{ form.verification_date|as_crispy_field }}
-                        {{ form.next_verification_date|as_crispy_field }}
-                        {{ form.interval|as_crispy_field }}
-                    </div>
-                    <div class="col-md-6">
-                        {{ form.si|as_crispy_field }}
-                        {{ form.gov_reg_number|as_crispy_field }}
-                        {{ form.inventory_number|as_crispy_field }}
-                    </div>
-                </div>
-                {{ form.verification_type|as_crispy_field }}
-                {{ form.verification_method|as_crispy_field }}
-            </div>
-
-            <!-- Дополнительные поля -->
-            <div class="tab-pane fade" id="additional">
-                <div class="row">
-                    <div class="col-md-4">
-                        {{ form.modification|as_crispy_field }}
-                        {{ form.previous_verification_mark|as_crispy_field }}
-                    </div>
-                    <div class="col-md-4">
-                        {{ form.is_vn|as_crispy_field }}
-                        {{ form.mark_in_passport|as_crispy_field }}
-                        {{ form.mark_on_si|as_crispy_field }}
-                    </div>
-                    <div class="col-md-4">
-                        {{ affecting_factors_form.temperature|as_crispy_field }}
-                        {{ affecting_factors_form.humidity|as_crispy_field }}
-                        {{ affecting_factors_form.pressure|as_crispy_field }}
-                    </div>
-                    <div class="col-md-4">
-                        {{ affecting_factors_form.voltage|as_crispy_field }}
-                        {{ affecting_factors_form.frequency|as_crispy_field }}
-                        {{ affecting_factors_form.harmonic_coefficient|as_crispy_field }}
-                    </div>
-                    <div class="col-md-4">
-                        {{ affecting_factors_form.liquid_temperature|as_crispy_field }}
-                        {{ affecting_factors_form.temperature_change|as_crispy_field }}
-                        {{ affecting_factors_form.pressure_change_rate|as_crispy_field }}
-                    </div>
-                    <div class="col-md-4">
-                        {{ form.protocol|as_crispy_field }} <!-- Поле для загрузки файла -->
-                    </div>
-                </div>
-                {{ form.composition|as_crispy_field }}
-                {{ form.comment|as_crispy_field }}
-            </div>
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0 text-white"><i class="fas fa-file-alt text-white"></i> Создание свидетельства о поверке</h2>
         </div>
-
-        <button type="submit" class="btn btn-primary">Сохранить</button>
-    </form>
-    <!-- filepath: c:\diplom\diplomtest\certificates\templates\certificates\create.html -->
-    {% comment %} <h3>Существующие свидетельства</h3>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Номер</th>
-                <th>Дата поверки</th>
-                <th>СИ</th>
-                <th>Действия</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for certificate in existing_certificates %}
-            <tr>
-                <td>{{ certificate.number }}</td>
-                <td>{{ certificate.verification_date|date:"d.m.Y" }}</td>
-                <td>{{ certificate.si }}</td>
-                <td>
-                    <a href="{% url 'certificates:create_from_example' certificate.id %}" class="btn btn-primary btn-sm">
-                        Создать по примеру
+        <div class="card-body">
+            <!-- Вкладки -->
+            <ul class="nav nav-tabs nav-fill mb-4" id="certificateTabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="main-tab" data-toggle="tab" href="#main" role="tab" aria-controls="main" aria-selected="true">
+                        <i class="fas fa-info-circle"></i> Основные данные
                     </a>
-                    <a href="{% url 'certificates:print' certificate.id %}" class="btn btn-secondary btn-sm">
-                        Печать
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="additional-tab" data-toggle="tab" href="#additional" role="tab" aria-controls="additional" aria-selected="false">
+                        <i class="fas fa-cogs"></i> Дополнительно
                     </a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table> {% endcomment %}
-    
-    
+                </li>
+            </ul>
 
+            <form method="post" id="certificate-form" class="needs-validation" novalidate enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="tab-content" id="certificateTabsContent">
+                    <!-- Основные поля -->
+                    <div class="tab-pane fade show active" id="main" role="tabpanel" aria-labelledby="main-tab">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card mb-3">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0"><i class="fas fa-calendar-alt"></i> Даты поверки</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label for="{{ form.verification_date.id_for_label }}"><i class="fas fa-calendar-day"></i> Дата поверки</label>
+                                            {{ form.verification_date }}
+                                            {% if form.verification_date.errors %}
+                                                <div class="invalid-feedback d-block">{{ form.verification_date.errors }}</div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="{{ form.next_verification_date.id_for_label }}"><i class="fas fa-calendar-check"></i> Срок действия поверки</label>
+                                            {{ form.next_verification_date }}
+                                            {% if form.next_verification_date.errors %}
+                                                <div class="invalid-feedback d-block">{{ form.next_verification_date.errors }}</div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="{{ form.interval.id_for_label }}"><i class="fas fa-clock"></i> Интервал поверки (лет)</label>
+                                            {{ form.interval }}
+                                            {% if form.interval.errors %}
+                                                <div class="invalid-feedback d-block">{{ form.interval.errors }}</div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card mb-3">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0"><i class="fas fa-tools"></i> Средство измерений</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label for="{{ form.si.id_for_label }}"><i class="fas fa-ruler"></i> Средство измерений</label>
+                                            {{ form.si }}
+                                            {% if form.si.errors %}
+                                                <div class="invalid-feedback d-block">{{ form.si.errors }}</div>
+                                            {% endif %}
+                                            <small class="form-text text-muted">
+                                                <i class="fas fa-info-circle"></i> Начните вводить регистрационный номер или название СИ. 
+                                                Поле поддерживает поиск по номеру и названию. Например: "1234" или "Вольтметр"
+                                            </small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="{{ form.gov_reg_number.id_for_label }}"><i class="fas fa-hashtag"></i> Гос. реестр</label>
+                                            {{ form.gov_reg_number }}
+                                            {% if form.gov_reg_number.errors %}
+                                                <div class="invalid-feedback d-block">{{ form.gov_reg_number.errors }}</div>
+                                            {% endif %}
+                                            <small class="form-text text-muted">{{ form.gov_reg_number.help_text }}</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="{{ form.inventory_number.id_for_label }}"><i class="fas fa-barcode"></i> Инв. номер</label>
+                                            {{ form.inventory_number }}
+                                            {% if form.inventory_number.errors %}
+                                                <div class="invalid-feedback d-block">{{ form.inventory_number.errors }}</div>
+                                            {% endif %}
+                                            <small class="form-text text-muted">{{ form.inventory_number.help_text }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card mb-3">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0"><i class="fas fa-clipboard-check"></i> Тип и методика поверки</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="{{ form.verification_type.id_for_label }}"><i class="fas fa-tasks"></i> Вид поверки</label>
+                                            {{ form.verification_type }}
+                                            {% if form.verification_type.errors %}
+                                                <div class="invalid-feedback d-block">{{ form.verification_type.errors }}</div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="{{ form.verification_method.id_for_label }}"><i class="fas fa-book"></i> Методика поверки</label>
+                                            {{ form.verification_method }}
+                                            {% if form.verification_method.errors %}
+                                                <div class="invalid-feedback d-block">{{ form.verification_method.errors }}</div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Дополнительные поля -->
+                    <div class="tab-pane fade" id="additional" role="tabpanel" aria-labelledby="additional-tab">
+                        <div class="card mb-3">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0"><i class="fas fa-info-circle"></i> Дополнительная информация</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="{{ form.modification.id_for_label }}"><i class="fas fa-cogs"></i> Модификация</label>
+                                            {{ form.modification }}
+                                            {% if form.modification.errors %}
+                                                <div class="invalid-feedback d-block">{{ form.modification.errors }}</div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="{{ form.previous_verification_mark.id_for_label }}"><i class="fas fa-history"></i> Предыдущая поверка</label>
+                                            {{ form.previous_verification_mark }}
+                                            {% if form.previous_verification_mark.errors %}
+                                                <div class="invalid-feedback d-block">{{ form.previous_verification_mark.errors }}</div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="{{ form.is_vn.id_for_label }}"><i class="fas fa-check-circle"></i> ВН</label>
+                                            {{ form.is_vn }}
+                                            {% if form.is_vn.errors %}
+                                                <div class="invalid-feedback d-block">{{ form.is_vn.errors }}</div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="{{ form.mark_in_passport.id_for_label }}"><i class="fas fa-file-alt"></i> Отметка в паспорте</label>
+                                            {{ form.mark_in_passport }}
+                                            {% if form.mark_in_passport.errors %}
+                                                <div class="invalid-feedback d-block">{{ form.mark_in_passport.errors }}</div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="{{ form.mark_on_si.id_for_label }}"><i class="fas fa-tag"></i> Отметка на СИ</label>
+                                            {{ form.mark_on_si }}
+                                            {% if form.mark_on_si.errors %}
+                                                <div class="invalid-feedback d-block">{{ form.mark_on_si.errors }}</div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="{{ form.protocol.id_for_label }}"><i class="fas fa-file-contract"></i> Протокол</label>
+                                            <div class="custom-file">
+                                                {{ form.protocol }}
+                                                <label class="custom-file-label" for="{{ form.protocol.id_for_label }}">Выберите файл</label>
+                                            </div>
+                                            {% if form.protocol.errors %}
+                                                <div class="invalid-feedback d-block">{{ form.protocol.errors }}</div>
+                                            {% endif %}
+                                            <small class="form-text text-muted">
+                                                <i class="fas fa-info-circle"></i> Поддерживаемые форматы: PDF, DOC, DOCX, JPG, PNG. 
+                                                Максимальный размер файла: 10 МБ
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card mb-3">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0"><i class="fas fa-thermometer-half"></i> Влияющие факторы</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="{{ affecting_factors_form.temperature.id_for_label }}"><i class="fas fa-temperature-high"></i> Температура</label>
+                                            {{ affecting_factors_form.temperature }}
+                                            {% if affecting_factors_form.temperature.errors %}
+                                                <div class="invalid-feedback d-block">{{ affecting_factors_form.temperature.errors }}</div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="{{ affecting_factors_form.humidity.id_for_label }}"><i class="fas fa-tint"></i> Влажность</label>
+                                            {{ affecting_factors_form.humidity }}
+                                            {% if affecting_factors_form.humidity.errors %}
+                                                <div class="invalid-feedback d-block">{{ affecting_factors_form.humidity.errors }}</div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="{{ affecting_factors_form.pressure.id_for_label }}"><i class="fas fa-compress-arrows-alt"></i> Давление</label>
+                                            {{ affecting_factors_form.pressure }}
+                                            {% if affecting_factors_form.pressure.errors %}
+                                                <div class="invalid-feedback d-block">{{ affecting_factors_form.pressure.errors }}</div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="{{ affecting_factors_form.voltage.id_for_label }}"><i class="fas fa-bolt"></i> Напряжение</label>
+                                            {{ affecting_factors_form.voltage }}
+                                            {% if affecting_factors_form.voltage.errors %}
+                                                <div class="invalid-feedback d-block">{{ affecting_factors_form.voltage.errors }}</div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="{{ affecting_factors_form.frequency.id_for_label }}"><i class="fas fa-wave-square"></i> Частота</label>
+                                            {{ affecting_factors_form.frequency }}
+                                            {% if affecting_factors_form.frequency.errors %}
+                                                <div class="invalid-feedback d-block">{{ affecting_factors_form.frequency.errors }}</div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="{{ affecting_factors_form.harmonic_coefficient.id_for_label }}"><i class="fas fa-chart-line"></i> Коэффициент гармоник</label>
+                                            {{ affecting_factors_form.harmonic_coefficient }}
+                                            {% if affecting_factors_form.harmonic_coefficient.errors %}
+                                                <div class="invalid-feedback d-block">{{ affecting_factors_form.harmonic_coefficient.errors }}</div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="{{ affecting_factors_form.liquid_temperature.id_for_label }}"><i class="fas fa-water"></i> Температура жидкости</label>
+                                            {{ affecting_factors_form.liquid_temperature }}
+                                            {% if affecting_factors_form.liquid_temperature.errors %}
+                                                <div class="invalid-feedback d-block">{{ affecting_factors_form.liquid_temperature.errors }}</div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="{{ affecting_factors_form.temperature_change.id_for_label }}"><i class="fas fa-exchange-alt"></i> Изменение температуры</label>
+                                            {{ affecting_factors_form.temperature_change }}
+                                            {% if affecting_factors_form.temperature_change.errors %}
+                                                <div class="invalid-feedback d-block">{{ affecting_factors_form.temperature_change.errors }}</div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="{{ affecting_factors_form.pressure_change_rate.id_for_label }}"><i class="fas fa-tachometer-alt"></i> Скорость изменения давления</label>
+                                            {{ affecting_factors_form.pressure_change_rate }}
+                                            {% if affecting_factors_form.pressure_change_rate.errors %}
+                                                <div class="invalid-feedback d-block">{{ affecting_factors_form.pressure_change_rate.errors }}</div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card mb-3">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0"><i class="fas fa-comment-alt"></i> Дополнительные комментарии</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="{{ form.composition.id_for_label }}"><i class="fas fa-list"></i> Состав</label>
+                                    {{ form.composition }}
+                                    {% if form.composition.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.composition.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="form-group">
+                                    <label for="{{ form.comment.id_for_label }}"><i class="fas fa-comment"></i> Комментарий</label>
+                                    {{ form.comment }}
+                                    {% if form.comment.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.comment.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="button" class="btn btn-secondary" onclick="history.back()">
+                        <i class="fas fa-arrow-left"></i> Назад
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Сохранить
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
@@ -122,6 +323,7 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <script src="{% static 'js/certificate_form.js' %}"></script>
 <script>
 $(document).ready(function() {
@@ -132,6 +334,12 @@ $(document).ready(function() {
             url: '/si/autocomplete/',
             dataType: 'json',
             delay: 250,
+            data: function(params) {
+                return {
+                    q: params.term,
+                    page: params.page
+                };
+            },
             processResults: function(data) {
                 return {
                     results: data.map(item => ({
@@ -139,7 +347,8 @@ $(document).ready(function() {
                         text: `${item.registration_number} - ${item.type__name}`
                     }))
                 };
-            }
+            },
+            cache: true
         }
     });
 
@@ -151,6 +360,80 @@ $(document).ready(function() {
             startDate.setFullYear(startDate.getFullYear() + years);
             startDate.setDate(startDate.getDate() - 1);
             $('#id_next_verification_date').val(startDate.toISOString().split('T')[0]);
+        }
+    });
+    
+    // Добавляем классы Bootstrap для всех полей ввода
+    $('input, select, textarea').addClass('form-control');
+    
+    // Добавляем классы для чекбоксов
+    $('input[type="checkbox"]').removeClass('form-control').addClass('form-check-input');
+    $('input[type="checkbox"]').parent().addClass('form-check');
+    $('input[type="checkbox"]').parent().append('<label class="form-check-label"></label>');
+    
+    // Обработка выбора файла
+    $('input[type="file"]').on('change', function() {
+        var fileName = $(this).val().split('\\').pop();
+        $(this).next('.custom-file-label').html(fileName);
+    });
+    
+    // Автоматическое заполнение методики поверки при выборе СИ
+    $('#id_si').on('change', function() {
+        var siId = $(this).val();
+        if (siId) {
+            $.ajax({
+                url: '/si/get_si_info/',
+                data: {
+                    'si_id': siId
+                },
+                dataType: 'json',
+                success: function(data) {
+                    // Заполняем тип СИ
+                    if (data.verification_type_id) {
+                        $('#id_verification_type').val(data.verification_type_id);
+                    }
+                    
+                    // Заполняем методику поверки
+                    if (data.verification_method_id) {
+                        $('#id_verification_method').val(data.verification_method_id);
+                    }
+                    
+                    // Заполняем гос. реестр и инв. номер
+                    if (data.gov_reg_number) {
+                        $('#id_gov_reg_number').val(data.gov_reg_number);
+                    }
+                    
+                    if (data.inventory_number) {
+                        $('#id_inventory_number').val(data.inventory_number);
+                    }
+                }
+            });
+        }
+    });
+    
+    // Автоматическое заполнение методики поверки при выборе типа СИ
+    $('#id_verification_type').on('change', function() {
+        var typeId = $(this).val();
+        if (typeId) {
+            $.ajax({
+                url: '/si/get_verification_methods/',
+                data: {
+                    'type_id': typeId
+                },
+                dataType: 'json',
+                success: function(data) {
+                    // Очищаем текущие опции
+                    $('#id_verification_method').empty();
+                    
+                    // Добавляем новые опции
+                    if (data.length > 0) {
+                        $('#id_verification_method').append($('<option></option>').attr('value', '').text('---------'));
+                        $.each(data, function(index, item) {
+                            $('#id_verification_method').append($('<option></option>').attr('value', item.id).text(item.name));
+                        });
+                    }
+                }
+            });
         }
     });
 });

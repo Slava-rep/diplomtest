@@ -1,3 +1,5 @@
+
+<!-- diplomtest/certificates/templates/certificates/detail.html -->
 {% extends "base.html" %}
 
 {% block content %}
@@ -27,3 +29,35 @@
     </div>
 </div>
 {% endblock %}
+
+
+
+<!-- {% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Свидетельство № {{ object.number }}</h2>
+    
+    <div class="card">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">СИ:</dt>
+                <dd class="col-sm-9">{{ object.si }}</dd>
+                
+                <dt class="col-sm-3">Дата поверки:</dt>
+                <dd class="col-sm-9">{{ object.verification_date|date:"d.m.Y" }}</dd>
+            </dl>
+            <dl class="row">
+                <dt class="col-sm-3">Протокол:</dt>
+                <dd class="col-sm-9">
+                    {% if object.protocol %}
+                        <a href="{{ object.protocol.url }}" target="_blank">Скачать протокол</a>
+                    {% else %}
+                        Протокол не прикреплен
+                    {% endif %}
+                </dd>
+            </dl>
+        </div>
+    </div>
+</div>
+{% endblock %} -->

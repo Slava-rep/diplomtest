@@ -1,18 +1,57 @@
+<!-- diplomtest/journals/templates/journals/hub.html -->
 {% extends "base.html" %}
+{% load static %}
+
+{% block title %}Журналы{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
-    <h2>Журналы</h2>
-    <div class="list-group">
-        <a href="{% url 'journals:registration' %}" class="list-group-item list-group-item-action">
-            Журнал регистрации СИ
-        </a>
-        <a href="{% url 'journals:verification' %}" class="list-group-item list-group-item-action">
-            Журнал поверок
-        </a>
-        <a href="{% url 'journals:environment' %}" class="list-group-item list-group-item-action">
-            Журнал условий среды
-        </a>
+    <h1 class="mb-4">Журналы</h1>
+    
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-book"></i> Журнал регистрации СИ
+                    </h5>
+                </div>
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <p class="card-text mb-0">Журнал для регистрации средств измерений в лаборатории</p>
+                    <a href="{% url 'journals:registration' %}" class="btn btn-primary">
+                        <i class="fas fa-external-link-alt"></i> Открыть журнал
+                    </a>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-clipboard-check"></i> Журнал поверок
+                    </h5>
+                </div>
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <p class="card-text mb-0">Журнал для записи результатов поверки средств измерений</p>
+                    <a href="{% url 'journals:verification' %}" class="btn btn-success">
+                        <i class="fas fa-external-link-alt"></i> Открыть журнал
+                    </a>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-temperature-high"></i> Журнал условий среды
+                    </h5>
+                </div>
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <p class="card-text mb-0">Журнал для записи параметров окружающей среды при поверке</p>
+                    <a href="{% url 'journals:environment' %}" class="btn btn-info text-white">
+                        <i class="fas fa-external-link-alt"></i> Открыть журнал
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

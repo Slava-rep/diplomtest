@@ -26,6 +26,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Копируем весь проект в контейнер
 COPY . /app/
+# Собираем статические файлы
+RUN python manage.py collectstatic --noinput
 
 # Устанавливаем переменные окружения для Django
 ENV PYTHONDONTWRITEBYTECODE=1

@@ -1,4 +1,100 @@
+<!-- diplomtest/journals/templates/journals/verification_pdf.html -->
 <!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Журнал регистрации поверки</title>
+    <style>
+        @page {
+            size: landscape;
+            margin: 1cm;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 10pt;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            font-size: 14pt;
+            margin: 0;
+        }
+        .date-range {
+            font-size: 10pt;
+            margin: 10px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 4px;
+            text-align: center;
+        }
+        th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+        .footer {
+            margin-top: 20px;
+            text-align: right;
+            font-size: 8pt;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Журнал регистрации поверки</h1>
+        {% if start_date or end_date %}
+        <div class="date-range">
+            Период: 
+            {% if start_date %}{{ start_date }}{% else %}начало не указано{% endif %}
+            - 
+            {% if end_date %}{{ end_date }}{% else %}конец не указан{% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>№ п/п</th>
+                <th>Дата поступления</th>
+                <th>Тип СИ</th>
+                <th>Диапазон измерений</th>
+                <th>Погрешность</th>
+                <th>Заводской номер</th>
+                <th>Результат</th>
+                <th>Дата поверки</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in entries %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ entry.receipt_date|date:"d.m.Y" }}</td>
+                <td>{{ entry.si.type }}</td>
+                <td>{{ entry.si.measurement_range }}</td>
+                <td>{{ entry.error }}</td>
+                <td>{{ entry.si.serial_number }}</td>
+                <td>{{ entry.get_result_display }}</td>
+                <td>{{ entry.verification_date|date:"d.m.Y" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="footer">
+        <p>Сформировано: {% now "d.m.Y H:i" %}</p>
+    </div>
+</body>
+</html>
+
+<!-- <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -60,4 +156,4 @@
         </tbody>
     </table>
 </body>
-</html>
+</html> -->

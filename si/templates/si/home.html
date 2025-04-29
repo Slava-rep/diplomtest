@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Область аккредитации{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Область аккредитации</h1>
+    
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">Типы поверки</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Управление типами поверки средств измерений</p>
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'si:verificationtype_list' %}" class="btn btn-primary">Управление типами поверки</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">Методики поверки</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Управление методиками поверки средств измерений</p>
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'si:verificationmethod_list' %}" class="btn btn-success">Управление методиками поверки</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title mb-0">Влияющие факторы</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Управление влияющими факторами при поверке</p>
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'si:affectingfactors_list' %}" class="btn btn-info">Управление влияющими факторами</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="card-title mb-0">Эталоны</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Управление эталонами для поверки средств измерений</p>
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'si:reference_list' %}" class="btn btn-warning">Управление эталонами</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

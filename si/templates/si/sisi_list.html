@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Средства измерения{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="fas fa-tools"></i> Средства измерения</h1>
+        <a href="{% url 'si:si_create' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Добавить СИ
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Регистрационный номер</th>
+                            <th>Тип СИ</th>
+                            <th>Серийный номер</th>
+                            <th>Год выпуска</th>
+                            <th>Статус</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for si in object_list %}
+                        <tr>
+                            <td>{{ si.registration_number }}</td>
+                            <td>{{ si.si_type_id }}</td>
+                            <td>{{ si.serial_number }}</td>
+                            <td>{{ si.year_of_manufacture }}</td>
+                            <td>
+                                {% if si.is_active %}
+                                <span class="badge bg-success">Активно</span>
+                                {% else %}
+                                <span class="badge bg-danger">Неактивно</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'si:si_update' si.pk %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'si:si_delete' si.pk %}" class="btn btn-sm btn-outline-danger">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center">Нет доступных средств измерения</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

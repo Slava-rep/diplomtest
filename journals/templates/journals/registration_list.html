@@ -1,8 +1,13 @@
+<!-- diplomtest/journals/templates/journals/registration_list.html -->
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2>Журнал регистрации СИ</h2>
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Журнал регистрации СИ</h2>
+    </div>
+
     <form method="get" class="mb-4">
         <div class="row">
             <div class="col-md-4">
@@ -14,36 +19,41 @@
                 <input type="date" id="end_date" name="end_date" class="form-control" value="{{ request.GET.end_date }}">
             </div>
             <div class="col-md-4 d-flex align-items-end">
-                <button type="submit" class="btn btn-primary">Фильтровать</button>
+                <button type="submit" class="btn btn-primary me-2">Фильтровать</button>
+                <a href="{% url 'journals:registration_pdf' %}?start_date={{ request.GET.start_date }}&end_date={{ request.GET.end_date }}" class="btn btn-secondary">
+                    <i class="fas fa-file-pdf"></i> Сохранить в PDF
+                </a>
             </div>
         </div>
     </form>
-    <div class="d-flex justify-content-end mb-3">
-        <form method="get" action="{% url 'journals:registration_pdf' %}">
-            <input type="hidden" name="start_date" value="{{ request.GET.start_date }}">
-            <input type="hidden" name="end_date" value="{{ request.GET.end_date }}">
-            <button type="submit" class="btn btn-secondary">Сохранить в PDF</button>
-        </form>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>№ п/п</th>
+                    <th>Дата поступления</th>
+                    <th>Тип СИ</th>
+                    <th>Заводской номер</th>
+                    <th>Год выпуска</th>
+                    <th>Изготовитель</th>
+                    <th>Примечание</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in object_list %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ entry.receipt_date|date:"d.m.Y" }}</td>
+                    <td>{{ entry.si.type }}</td>
+                    <td>{{ entry.si.serial_number }}</td>
+                    <td>{{ entry.si.year_of_manufacture }}</td>
+                    <td>{{ entry.si.manufacturer }}</td>
+                    <td>{{ entry.note }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>СИ</th>
-                <th>Дата поступления</th>
-                <th>Подпись</th>
-                <th>Дата выдачи</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for entry in object_list %}
-            <tr>
-                <td>{{ entry.si }}</td>
-                <td>{{ entry.receipt_date|date:"d.m.Y" }}</td>
-                <td>{{ entry.receipt_signature }}</td>
-                <td>{{ entry.issue_date|date:"d.m.Y" }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
 </div>
 {% endblock %}

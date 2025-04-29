@@ -1,36 +1,10 @@
-# Python
-*.pyc
-__pycache__/
-*.pyo
-*.pyd
-*.pdb
-
-# Virtual environment
-venv/
-env/
-*.env
-
-# Django
-db.sqlite3
-*.log
-/media/
-staticfiles/
-*.pot
-*.py[cod]
-*.sqlite3
-
-# IDEs and editors
-.vscode/
-.idea/
-*.swp
-*.swo
-*.swn
-*.bak
-*.tmp
-
 # Byte-compiled / optimized / DLL files
+__pycache__/
 *.py[cod]
 *$py.class
+
+# C extensions
+*.so
 
 # Distribution / packaging
 .Python
@@ -50,6 +24,10 @@ wheels/
 .installed.cfg
 *.egg
 
+# PyInstaller
+*.manifest
+*.spec
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
@@ -57,61 +35,83 @@ pip-delete-this-directory.txt
 # Unit test / coverage reports
 htmlcov/
 .tox/
-.nox/
 .coverage
-*.cover
-.hypothesis/
-.pytest_cache/
+.coverage.*
+.cache
 nosetests.xml
 coverage.xml
 *.cover
-*.py,cover
-.cache
+.hypothesis/
 
 # Translations
 *.mo
+*.pot
 
 # Django stuff:
 *.log
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
+media/
 
-# Static files
-/static/
-staticfiles/
+# Flask stuff:
+instance/
+.webassets-cache
 
-# Media files
-/media/
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
 
-# PyCharm
-.idea/
+# pyenv
+.python-version
 
-# VSCode
-.vscode/
+# celery beat schedule file
+celerybeat-schedule
 
-# macOS
-.DS_Store
-.AppleDouble
-.LSOverride
+# SageMath parsed files
+*.sage.py
 
-# Windows
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-$RECYCLE.BIN/
-
-# Logs and databases
-*.log
-*.sql
-*.sqlite3
-
-# Environment variables
+# Environments
 .env
-.env.*
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
-# WeasyPrint cache
-.weasyprint/
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+
+# IDE settings
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

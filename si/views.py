@@ -1,67 +1,105 @@
-from django.shortcuts import render
-from .models import SI  # Убедитесь, что модель SI определена в models.py
-from django.views.generic import ListView  # Добавьте этот импорт
-
-from django.db.models import Q  # Добавляем недостающий импорт
-from .models import SI  # Импорт модели SI
-from django.views.generic import TemplateView
-
-
-# si/views.py
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
+from django.urls import reverse_lazy
 from django.http import JsonResponse
-class SIListView(ListView):
-    model = SI
-    template_name = 'si/si_list.html'  # Укажите правильный путь к шаблону
-    context_object_name = 'si_list'
+from .models import SiVerificationtype, SiVerificationmethod, SiAffectingfactors, SiReference
+from .forms import (
+    SiVerificationmethodForm, SiAffectingfactorsForm, SiReferenceForm
+)
 
-    # def get_queryset(self):
-    #     # Жестко задаем типы средств измерений, которые нужно отобразить
-    #     return SI.objects.filter(type__name__in=['Тип 1', 'Тип 2', 'Тип 3'])
-
-# Класс для отображения статичных данных
-class StaticSIListView(TemplateView):
-    template_name = 'si/si_list.html'
-
+class SiHomeView(LoginRequiredMixin, TemplateView):
+    template_name = 'si/home.html'
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Статичные данные для таблицы
-        context['si_list'] = [
-            {
-                'type': 'Датчики давления, преобразователи давления',
-                'measurement_range': '(-10 – 1600) кПа',
-                'accuracy': 'ПГ ± (0,35 - 1) %',
-                'notes': '',
-                'additional_notes': ''
-            },
-            {
-                'type': 'Измерители температурные',
-                'measurement_range': '(0 – 150) °C, (0 – 800) °C',
-                'accuracy': 'ПГ ± 1 %',
-                'notes': '',
-                'additional_notes': ''
-            },
-            {
-                'type': 'Амперметры и вольтметры, миллиамперметры, милливольтметры щитовые',
-                'measurement_range': '(0 – 10) А, (0 – 1000) В',
-                'accuracy': 'КТ 0,2',
-                'notes': '',
-                'additional_notes': ''
-            },
-            {
-                'type': 'Преобразователи напряжения постоянного тока ПН1',
-                'measurement_range': '(0 – 1500) В',
-                'accuracy': 'ПГ ± 1 %',
-                'notes': '',
-                'additional_notes': ''
-            },
-        ]
+        context['verification_types'] = SiVerificationtype.objects.all()
+        context['verification_methods'] = SiVerificationmethod.objects.all()
+        context['affecting_factors'] = SiAffectingfactors.objects.all()
+        context['references'] = SiReference.objects.all()
         return context
 
-def si_autocomplete(request):
-    query = request.GET.get('query', '')
-    results = SI.objects.filter(
-        Q(registration_number__icontains=query) |
-        Q(type__name__icontains=query)
-    ).values('id', 'registration_number', 'type__name')[:10]
-    return JsonResponse(list(results), safe=False)
+@login_required
+def get_verification_methods(request):
+    """Представление для получения методик поверки"""
+    methods = SiVerificationmethod.objects.all()
+    results = []
+    for method in methods:
+        results.append({
+            'id': method.id_verification_method,
+            'name': method.name,
+            'method_number': method.method_number,
+        })
+    return JsonResponse(results, safe=False)
 
+class SiVerificationtypeListView(LoginRequiredMixin, ListView):
+    model = SiVerificationtype
+    template_name = 'si/verificationtype_list.html'
+    context_object_name = 'verification_types'
+
+class SiVerificationmethodListView(LoginRequiredMixin, ListView):
+    model = SiVerificationmethod
+    template_name = 'si/verificationmethod_list.html'
+    context_object_name = 'verification_methods'
+
+class SiVerificationmethodCreateView(LoginRequiredMixin, CreateView):
+    model = SiVerificationmethod
+    form_class = SiVerificationmethodForm
+    template_name = 'si/verificationmethod_form.html'
+    success_url = reverse_lazy('si:verificationmethod_list')
+
+class SiVerificationmethodUpdateView(LoginRequiredMixin, UpdateView):
+    model = SiVerificationmethod
+    form_class = SiVerificationmethodForm
+    template_name = 'si/verificationmethod_form.html'
+    success_url = reverse_lazy('si:verificationmethod_list')
+
+class SiVerificationmethodDeleteView(LoginRequiredMixin, DeleteView):
+    model = SiVerificationmethod
+    template_name = 'si/verificationmethod_confirm_delete.html'
+    success_url = reverse_lazy('si:verificationmethod_list')
+
+class SiAffectingfactorsListView(LoginRequiredMixin, ListView):
+    model = SiAffectingfactors
+    template_name = 'si/affectingfactors_list.html'
+    context_object_name = 'affecting_factors'
+
+class SiAffectingfactorsCreateView(LoginRequiredMixin, CreateView):
+    model = SiAffectingfactors
+    form_class = SiAffectingfactorsForm
+    template_name = 'si/affectingfactors_form.html'
+    success_url = reverse_lazy('si:affectingfactors_list')
+
+class SiAffectingfactorsUpdateView(LoginRequiredMixin, UpdateView):
+    model = SiAffectingfactors
+    form_class = SiAffectingfactorsForm
+    template_name = 'si/affectingfactors_form.html'
+    success_url = reverse_lazy('si:affectingfactors_list')
+
+class SiAffectingfactorsDeleteView(LoginRequiredMixin, DeleteView):
+    model = SiAffectingfactors
+    template_name = 'si/affectingfactors_confirm_delete.html'
+    success_url = reverse_lazy('si:affectingfactors_list')
+
+class SiReferenceListView(LoginRequiredMixin, ListView):
+    model = SiReference
+    template_name = 'si/reference_list.html'
+    context_object_name = 'references'
+
+class SiReferenceCreateView(LoginRequiredMixin, CreateView):
+    model = SiReference
+    form_class = SiReferenceForm
+    template_name = 'si/reference_form.html'
+    success_url = reverse_lazy('si:reference_list')
+
+class SiReferenceUpdateView(LoginRequiredMixin, UpdateView):
+    model = SiReference
+    form_class = SiReferenceForm
+    template_name = 'si/reference_form.html'
+    success_url = reverse_lazy('si:reference_list')
+
+class SiReferenceDeleteView(LoginRequiredMixin, DeleteView):
+    model = SiReference
+    template_name = 'si/reference_confirm_delete.html'
+    success_url = reverse_lazy('si:reference_list')

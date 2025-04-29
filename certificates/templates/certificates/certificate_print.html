@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Свидетельство о поверке</title>
+    <style>
+        @page {
+            size: A4 landscape;
+            margin: 0;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 9pt;
+            line-height: 1.3;
+            width: 50%;
+            padding: 1cm;
+            box-sizing: border-box;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .header img {
+            max-width: 80px;
+            height: auto;
+        }
+        .header h1 {
+            font-size: 11pt;
+            margin: 8px 0;
+            text-transform: uppercase;
+        }
+        .header p {
+            font-size: 8pt;
+            margin: 4px 0;
+        }
+        .certificate-number {
+            text-align: center;
+            margin: 15px 0;
+            font-size: 10pt;
+            font-weight: bold;
+        }
+        .valid-until {
+            text-align: right;
+            margin: 8px 0;
+            font-size: 9pt;
+        }
+        .content {
+            margin: 12px 0;
+        }
+        .field {
+            margin: 8px 0;
+        }
+        .field-name {
+            font-size: 8pt;
+            color: #666;
+        }
+        .field-value {
+            font-weight: bold;
+            margin-top: 2px;
+            font-size: 9pt;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 9pt;
+        }
+        .signature {
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 9pt;
+        }
+        .verification-mark {
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .small-text {
+            font-size: 7pt;
+            color: #666;
+            font-style: italic;
+        }
+        .verification-mark-space {
+            width: 40px;
+            height: 40px;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="/static/images/rostest.png" alt="Логотип">
+        <h1>Федеральное агентство по техническому регулированию и метрологии</h1>
+        <p>Федеральное бюджетное учреждение<br>
+        «Государственный региональный центр стандартизации,<br>
+        метрологии и испытаний»</p>
+        <p>RA.RU.311320</p>
+    </div>
+
+    <div class="certificate-number">
+        СВИДЕТЕЛЬСТВО О ПОВЕРКЕ № {{ certificate.number|default:"_____________" }}
+    </div>
+
+    <div class="valid-until">
+        Действительно до {{ certificate.valid_until|date:"d E Y г."|default:"______________" }}
+    </div>
+
+    <div class="content">
+        <div class="field">
+            <div class="field-name">Средство измерений</div>
+            <div class="field-value">{{ certificate.si.type|default:"_______________________" }}</div>
+            <div class="small-text">наименование, тип, модификация</div>
+        </div>
+
+        <div class="field">
+            <div class="field-name">Заводской номер</div>
+            <div class="field-value">{{ certificate.si.serial_number|default:"_______________________" }}</div>
+        </div>
+
+        <div class="field">
+            <div class="field-name">Поверено</div>
+            <div class="field-value">В полном объеме</div>
+            <div class="small-text">наименование величин, диапазонов, на которых поверено средство измерений</div>
+        </div>
+
+        <div class="field">
+            <div class="field-name">В соответствии с</div>
+            <div class="field-value">{{ certificate.verification_method|default:"_______________________" }}</div>
+            <div class="small-text">наименование документа, на основании которого выполнена поверка</div>
+        </div>
+
+        <div class="field">
+            <div class="field-name">С применением эталонов</div>
+            <div class="field-value">{{ certificate.standards|default:"_______________________" }}</div>
+            <div class="small-text">наименование, тип, заводской номер, регистрационный номер</div>
+        </div>
+
+        <div class="field">
+            <div class="field-name">При следующих значениях влияющих факторов</div>
+            <div class="field-value">
+                температура {{ certificate.temperature|default:"___" }}°С,
+                влажность {{ certificate.humidity|default:"___" }}%,
+                давление {{ certificate.pressure|default:"___" }} кПа
+            </div>
+            <div class="small-text">перечень влияющих факторов, с указанием их значений</div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>и на основании результатов первичной поверки признано пригодным к применению.</p>
+        
+        <div class="signature">
+            <div>
+                <p>Поверитель</p>
+                <p>_________________</p>
+                <div class="small-text">подпись</div>
+            </div>
+            <div>
+                <p>Начальник отдела</p>
+                <p>_________________</p>
+                <div class="small-text">подпись</div>
+            </div>
+        </div>
+
+        <div class="verification-mark">
+            <div>
+                <p>Знак поверки</p>
+            </div>
+            <div class="verification-mark-space"></div>
+        </div>
+
+        <div style="margin-top: 15px;">
+            <p>Дата поверки: {{ certificate.verification_date|date:"d E Y г."|default:"______________" }}</p>
+        </div>
+    </div>
+</body>
+</html> 

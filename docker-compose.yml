@@ -12,14 +12,24 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   web:
     build:
       context: .
     container_name: diplomtest-container
-    command: python manage.py runserver 0.0.0.0:8000
+    command: >
+      sh -c "python manage.py wait_for_db &&
+             python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/app
+      - static_volume:/app/static
     ports:
       - "8000:8000"
     environment:
@@ -28,8 +38,12 @@ services:
       - DATABASE_NAME=vnikti2
       - DATABASE_USER=postgres
       - DATABASE_PASSWORD=1111
+      - DJANGO_SETTINGS_MODULE=diplomtest.settings
+      - DJANGO_SECRET_KEY=your-secret-key-here
+      - DJANGO_DEBUG=True
     depends_on:
-      - db
-
+      db:
+        condition: service_healthy
 volumes:
   postgres_data:
+  static_volume:

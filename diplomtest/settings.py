@@ -31,24 +31,42 @@ ALLOWED_HOSTS = ['*']
 
 # Application definition
 
+# INSTALLED_APPS = [
+#     'users.apps.UsersConfig',  # Move users app to the top
+#     'django.contrib.admin',
+#     'django.contrib.auth',
+#     'django.contrib.contenttypes',
+#     'django.contrib.sessions',
+#     'django.contrib.messages',
+#     'django.contrib.staticfiles',
+#     # 'certificates.apps.CertificatesConfig',
+#     'si',
+#     'certificates',
+#     'journals',
+#     'crispy_forms',
+#     'crispy_bootstrap5',
+#     #'users',
+#     'employees',
+    
+# ]
 INSTALLED_APPS = [
-    'users.apps.UsersConfig',  # Move users app to the top
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'certificates.apps.CertificatesConfig',
-    'si',
-    'certificates',
-    'journals',
+    'si.apps.SiConfig',
+    'employees.apps.EmployeesConfig',
+    'certificates.apps.CertificatesConfig',
+    'journals.apps.JournalsConfig',
+    'users.apps.UsersConfig',
+    'utils.apps.UtilsConfig',
     'crispy_forms',
     'crispy_bootstrap5',
-    #'users',
-    'employees',
-    
 ]
+
+
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 MIDDLEWARE = [
@@ -59,6 +77,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'diplomtest.middleware.DatabaseConnectionMiddleware',  # Добавляем наш middleware
 ]
 
 ROOT_URLCONF = 'diplomtest.urls'
@@ -102,12 +121,26 @@ WSGI_APPLICATION = 'diplomtest.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DATABASE_NAME', 'vnikti2'),  # Имя вашей базы данных
-        'USER': os.getenv('DATABASE_USER', 'postgres'),  # Пользователь PostgreSQL
-        'PASSWORD': os.getenv('DATABASE_PASSWORD', '1111'),  # Пароль PostgreSQL
-        # 'HOST': os.getenv('DATABASE_HOST', '127.0.0.1'),  # Локальный хост
-        'HOST': os.getenv('DATABASE_HOST', 'db'),  # для  docker-compose up --build
-        'PORT': os.getenv('DATABASE_PORT', '5432'),  # Порт PostgreSQL
+        'NAME': os.getenv('DATABASE_NAME', 'vnikti2'),
+        'USER': os.getenv('DATABASE_USER', 'postgres'),
+        'PASSWORD': os.getenv('DATABASE_PASSWORD', '1111'),
+        'HOST': os.getenv('DATABASE_HOST', '127.0.0.1'),
+        # 'HOST': os.getenv('DATABASE_HOST', 'db'),  # для  docker-compose up --build
+        'PORT': os.getenv('DATABASE_PORT', '5432'),
+        'CONN_MAX_AGE': 0,  # Закрывать соединение после каждого запроса
+        'OPTIONS': {
+            'client_encoding': 'UTF8',
+            'connect_timeout': 10,
+            'keepalives': 1,
+            'keepalives_idle': 5,
+            'keepalives_interval': 5,
+            'keepalives_count': 5,
+            'application_name': 'django_app',
+            'options': '-c statement_timeout=60000 -c lock_timeout=60000',
+        },
+        'ATOMIC_REQUESTS': True,  # Автоматически оборачивать запросы в транзакции
+        'CONN_HEALTH_CHECKS': True,  # Проверять здоровье соединения
+        'DISABLE_SERVER_SIDE_CURSORS': True,  # Отключить серверные курсоры
     }
 }
 
@@ -134,20 +167,24 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+# LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+# TIME_ZONE = 'UTC'
 
+# USE_I18N = True
+
+# USE_TZ = True
+LANGUAGE_CODE = 'ru-ru'
+TIME_ZONE = 'Europe/Moscow'
 USE_I18N = True
-
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 # STATICFILES_DIRS = [BASE_DIR / 'static'] # Статические файлы
@@ -171,44 +208,15 @@ USE_L10N = False  # Отключаем локализацию форматов
 AUTH_USER_MODEL = 'users.CustomUser'  # Если используется кастомная модель
 
 LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'si:list'  # или куда хотите редиректить после входа
-LOGOUT_REDIRECT_URL = 'login'
-
+# LOGIN_REDIRECT_URL = 'si:list'  # или куда хотите редиректить после входа
+# LOGOUT_REDIRECT_URL = 'login'
+# Auth settings
+LOGIN_REDIRECT_URL = 'si:home'
+LOGOUT_REDIRECT_URL = 'si:home'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-
-
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'handlers': {
-#         'console': {
-#             'class': 'logging.StreamHandler',
-#             'formatter': 'verbose',
-#         },
-#     },
-#     'formatters': {
-#         'verbose': {
-#             'format': '%(levelname)s %(name)s %(message)s',
-#         },
-#     },
-#     'loggers': {
-#         # Логи самого Pisa
-#         'xhtml2pdf': {
-#             'handlers': ['console'],
-#             'level': 'DEBUG',
-#             'propagate': False,
-#         },
-#         # Логи ReportLab (если нужны)
-#         'reportlab': {
-#             'handlers': ['console'],
-#             'level': 'DEBUG',
-#             'propagate': False,
-#         },
-#     },
-# }
 
 LOGGING = {
     'version': 1,
