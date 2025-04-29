@@ -184,6 +184,8 @@ from django.utils.dateparse import parse_date
 from xhtml2pdf import pisa
 from weasyprint import HTML
 from weasyprint.text.fonts import FontConfiguration
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 User = get_user_model()
 
@@ -191,11 +193,13 @@ def generate_cert_number():
     last_num = CertificatesCertificate.objects.order_by('-id').first()
     return f"ВНИКТИ/{timezone.now().strftime('%d-%m-%Y')}/{last_num.id + 1:09d}"
 
+@method_decorator(login_required, name='dispatch')
 class CertificateListView(ListView):
     model = CertificatesCertificate
     template_name = 'certificates/certificate_list.html'
     context_object_name = 'certificates'
 
+@method_decorator(login_required, name='dispatch')
 class CertificateCreateView(CreateView):
     model = CertificatesCertificate
     form_class = CertificateForm
@@ -235,6 +239,7 @@ class CertificateCreateView(CreateView):
             self.request.user.employee.measurement_types.exists()
         )
 
+@method_decorator(login_required, name='dispatch')
 class CertificateDetailView(DetailView):
     model = CertificatesCertificate
     template_name = 'certificates/detail.html'
@@ -243,9 +248,11 @@ def home(request):
     return render(request, 'certificates/home.html')
 
 @method_decorator(measurement_type_required('Теплофизические измерения'), name='dispatch')
+@method_decorator(login_required, name='dispatch')
 class TemperatureCertificateCreateView(CertificateCreateView):
     template_name = 'certificates/temperature_create.html'
 
+@method_decorator(login_required, name='dispatch')
 class CertificateCreateFromExampleView(CreateView):
     model = CertificatesCertificate
     form_class = CertificateForm
@@ -282,6 +289,7 @@ class CertificateCreateFromExampleView(CreateView):
         })
         return initial
 
+@login_required
 def print_certificate(request, pk=None):
     # Если pk передан, получаем существующий сертификат, иначе создаем пустой контекст
     context = {}

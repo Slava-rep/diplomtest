@@ -207,12 +207,9 @@ USE_L10N = False  # Отключаем локализацию форматов
 
 AUTH_USER_MODEL = 'users.CustomUser'  # Если используется кастомная модель
 
-LOGIN_URL = 'login'
-# LOGIN_REDIRECT_URL = 'si:list'  # или куда хотите редиректить после входа
-# LOGOUT_REDIRECT_URL = 'login'
-# Auth settings
-LOGIN_REDIRECT_URL = 'si:home'
-LOGOUT_REDIRECT_URL = 'si:home'
+LOGIN_URL = '/login/'     # URL страницы входа
+LOGIN_REDIRECT_URL = '/'  # После успешного входа перенаправляем на главную страницу
+LOGOUT_REDIRECT_URL = '/login/'  # После выхода перенаправляем на страницу входа
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

@@ -8,6 +8,7 @@ from .models import SiVerificationtype, SiVerificationmethod, SiAffectingfactors
 from .forms import (
     SiVerificationmethodForm, SiAffectingfactorsForm, SiReferenceForm
 )
+from django.utils.decorators import method_decorator
 
 class SiHomeView(LoginRequiredMixin, TemplateView):
     template_name = 'si/home.html'
@@ -33,72 +34,85 @@ def get_verification_methods(request):
         })
     return JsonResponse(results, safe=False)
 
+@method_decorator(login_required, name='dispatch')
 class SiVerificationtypeListView(LoginRequiredMixin, ListView):
     model = SiVerificationtype
     template_name = 'si/verificationtype_list.html'
     context_object_name = 'verification_types'
 
+@method_decorator(login_required, name='dispatch')
 class SiVerificationmethodListView(LoginRequiredMixin, ListView):
     model = SiVerificationmethod
     template_name = 'si/verificationmethod_list.html'
     context_object_name = 'verification_methods'
 
+@method_decorator(login_required, name='dispatch')
 class SiVerificationmethodCreateView(LoginRequiredMixin, CreateView):
     model = SiVerificationmethod
     form_class = SiVerificationmethodForm
     template_name = 'si/verificationmethod_form.html'
     success_url = reverse_lazy('si:verificationmethod_list')
 
+@method_decorator(login_required, name='dispatch')
 class SiVerificationmethodUpdateView(LoginRequiredMixin, UpdateView):
     model = SiVerificationmethod
     form_class = SiVerificationmethodForm
     template_name = 'si/verificationmethod_form.html'
     success_url = reverse_lazy('si:verificationmethod_list')
 
+@method_decorator(login_required, name='dispatch')
 class SiVerificationmethodDeleteView(LoginRequiredMixin, DeleteView):
     model = SiVerificationmethod
     template_name = 'si/verificationmethod_confirm_delete.html'
     success_url = reverse_lazy('si:verificationmethod_list')
 
+@method_decorator(login_required, name='dispatch')
 class SiAffectingfactorsListView(LoginRequiredMixin, ListView):
     model = SiAffectingfactors
     template_name = 'si/affectingfactors_list.html'
     context_object_name = 'affecting_factors'
 
+@method_decorator(login_required, name='dispatch')
 class SiAffectingfactorsCreateView(LoginRequiredMixin, CreateView):
     model = SiAffectingfactors
     form_class = SiAffectingfactorsForm
     template_name = 'si/affectingfactors_form.html'
     success_url = reverse_lazy('si:affectingfactors_list')
 
+@method_decorator(login_required, name='dispatch')
 class SiAffectingfactorsUpdateView(LoginRequiredMixin, UpdateView):
     model = SiAffectingfactors
     form_class = SiAffectingfactorsForm
     template_name = 'si/affectingfactors_form.html'
     success_url = reverse_lazy('si:affectingfactors_list')
 
+@method_decorator(login_required, name='dispatch')
 class SiAffectingfactorsDeleteView(LoginRequiredMixin, DeleteView):
     model = SiAffectingfactors
     template_name = 'si/affectingfactors_confirm_delete.html'
     success_url = reverse_lazy('si:affectingfactors_list')
 
+@method_decorator(login_required, name='dispatch')
 class SiReferenceListView(LoginRequiredMixin, ListView):
     model = SiReference
     template_name = 'si/reference_list.html'
     context_object_name = 'references'
 
+@method_decorator(login_required, name='dispatch')
 class SiReferenceCreateView(LoginRequiredMixin, CreateView):
     model = SiReference
     form_class = SiReferenceForm
     template_name = 'si/reference_form.html'
     success_url = reverse_lazy('si:reference_list')
 
+@method_decorator(login_required, name='dispatch')
 class SiReferenceUpdateView(LoginRequiredMixin, UpdateView):
     model = SiReference
     form_class = SiReferenceForm
     template_name = 'si/reference_form.html'
     success_url = reverse_lazy('si:reference_list')
 
+@method_decorator(login_required, name='dispatch')
 class SiReferenceDeleteView(LoginRequiredMixin, DeleteView):
     model = SiReference
     template_name = 'si/reference_confirm_delete.html'

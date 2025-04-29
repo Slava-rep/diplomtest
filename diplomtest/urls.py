@@ -28,23 +28,20 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # Аутентификация
-    path('login/', auth_views.LoginView.as_view(
-            template_name='user/login.html'
-        ),
-        name='login'
-    ),
-    path('logout/', auth_views.LogoutView.as_view(
-            next_page='login'
-        ),
-        name='logout'
-    ),
-    path('si/', include('si.urls')),
-    path('employees/', include('employees.urls')),
+    path('', include('si.urls')),
     path('certificates/', include('certificates.urls')),
     path('journals/', include('journals.urls')),
+    path('employees/', include('employees.urls')),
     path('users/', include('users.urls')),
-    path('', RedirectView.as_view(url='/si/')),  # Добавляем редирект с корневого URL
+    
+    # Аутентификация
+    path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
+    path('password_change/', auth_views.PasswordChangeView.as_view(template_name='registration/password_change.html'), name='password_change'),
+    path('password_change/done/', auth_views.PasswordChangeDoneView.as_view(template_name='registration/password_change_done.html'), name='password_change_done'),
+    
+    # Редирект с корневого URL
+    path('', RedirectView.as_view(url='/si/')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # urlpatterns = [

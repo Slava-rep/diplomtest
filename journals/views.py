@@ -6,11 +6,20 @@ from django.utils.dateparse import parse_date
 from weasyprint import HTML
 from xhtml2pdf import pisa
 from .models import JournalsJournalregistration, JournalsJournalverification, JournalsJournalenvironment
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import redirect
 
-class JournalRegistrationListView(ListView):
+@login_required
+def hub(request):
+    return render(request, 'journals/hub.html')
+
+class JournalRegistrationListView(LoginRequiredMixin, ListView):
     model = JournalsJournalregistration
     template_name = 'journals/registration_list.html'
     context_object_name = 'object_list'
+    login_url = '/login/'  # URL для перенаправления неавторизованных пользователей
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -28,10 +37,11 @@ class JournalRegistrationListView(ListView):
         context['end_date'] = self.request.GET.get('end_date', '')
         return context
 
-class JournalVerificationListView(ListView):
+class JournalVerificationListView(LoginRequiredMixin, ListView):
     model = JournalsJournalverification
     template_name = 'journals/verification_list.html'
     context_object_name = 'object_list'
+    login_url = '/login/'
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -49,10 +59,11 @@ class JournalVerificationListView(ListView):
         context['end_date'] = self.request.GET.get('end_date', '')
         return context
 
-class JournalEnvironmentListView(ListView):
+class JournalEnvironmentListView(LoginRequiredMixin, ListView):
     model = JournalsJournalenvironment
     template_name = 'journals/environment_list.html'
     context_object_name = 'object_list'
+    login_url = '/login/'
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -70,43 +81,38 @@ class JournalEnvironmentListView(ListView):
         context['end_date'] = self.request.GET.get('end_date', '')
         return context
 
-def hub(request):
-    return render(request, 'journals/hub.html')
-
+@login_required
 def registration_pdf_view(request):
-    # Получаем даты из параметров запроса
+    if not request.user.is_authenticated:
+        return redirect('login')
+        
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
 
-    # Получаем записи журнала с фильтрацией по датам
     entries = JournalsJournalregistration.objects.all()
     if start_date:
         entries = entries.filter(receipt_date__gte=parse_date(start_date))
     if end_date:
         entries = entries.filter(receipt_date__lte=parse_date(end_date))
 
-    # Подготавливаем контекст для шаблона
     context = {
         'entries': entries,
         'start_date': parse_date(start_date) if start_date else None,
         'end_date': parse_date(end_date) if end_date else None,
     }
 
-    # Рендерим HTML
     html_string = render_to_string('journals/registration_pdf.html', context)
-
-    # Создаем PDF с горизонтальной ориентацией
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="journal_registration.pdf"'
     
-    HTML(string=html_string).write_pdf(
-        response,
-        presentational_hints=True
-    )
-
+    HTML(string=html_string).write_pdf(response, presentational_hints=True)
     return response
 
+@login_required
 def verification_pdf_view(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+        
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
 
@@ -126,14 +132,14 @@ def verification_pdf_view(request):
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="journal_verification.pdf"'
     
-    HTML(string=html_string).write_pdf(
-        response,
-        presentational_hints=True
-    )
-
+    HTML(string=html_string).write_pdf(response, presentational_hints=True)
     return response
 
+@login_required
 def environment_pdf_view(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+        
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
 
@@ -153,46 +159,5 @@ def environment_pdf_view(request):
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="journal_environment.pdf"'
     
-    HTML(string=html_string).write_pdf(
-        response,
-        presentational_hints=True
-    )
-
+    HTML(string=html_string).write_pdf(response, presentational_hints=True)
     return response
-
-class VerificationPDFView(View):
-    def get(self, request):
-        start_date = request.GET.get('start_date')
-        end_date = request.GET.get('end_date')
-        
-        entries = VerificationEntry.objects.all()
-        
-        if start_date:
-            entries = entries.filter(receipt_date__gte=start_date)
-        if end_date:
-            entries = entries.filter(receipt_date__lte=end_date)
-            
-        entries = entries.order_by('receipt_date')
-        
-        context = {
-            'entries': entries,
-            'start_date': start_date,
-            'end_date': end_date,
-        }
-        
-        template = get_template('journals/verification_pdf.html')
-        html = template.render(context)
-        
-        response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename="verification_journal.pdf"'
-        
-        pisa_status = pisa.CreatePDF(
-            html,
-            dest=response,
-            encoding='utf-8'
-        )
-        
-        if pisa_status.err:
-            return HttpResponse('We had some errors with the PDF generation')
-            
-        return response
