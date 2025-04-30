@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Типы поверки{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Типы поверки</h2>
+        <a href="{% url 'si:index' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Назад
+        </a>
+    </div>
+
+    {% if verification_types %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Наименование</th>
+                        <th>Описание</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for type in verification_types %}
+                        <tr>
+                            <td>{{ type.name }}</td>
+                            <td>{{ type.description|default:"-" }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            <i class="fas fa-info-circle"></i> Типы поверки отсутствуют
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

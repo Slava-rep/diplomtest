@@ -18,17 +18,14 @@ from django.contrib import admin
 from django.urls import path, re_path
 from django.contrib import admin
 from django.urls import path, include
-from django.views.generic import RedirectView  # Добавьте этот импорт
-# from journals.views import JournalHubView  # Добавьте этот импорт
+from django.views.generic import RedirectView
 from django.contrib.auth import views as auth_views
-
-# diplomtest/diplomtest/urls.py
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('si.urls')),
+    path('si/', include('si.urls')),
     path('certificates/', include('certificates.urls')),
     path('journals/', include('journals.urls')),
     path('employees/', include('employees.urls')),
@@ -41,7 +38,7 @@ urlpatterns = [
     path('password_change/done/', auth_views.PasswordChangeDoneView.as_view(template_name='registration/password_change_done.html'), name='password_change_done'),
     
     # Редирект с корневого URL
-    path('', RedirectView.as_view(url='/si/')),
+    path('', RedirectView.as_view(url='/si/'), name='index'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # urlpatterns = [

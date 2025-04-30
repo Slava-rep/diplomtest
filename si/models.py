@@ -40,8 +40,8 @@ class SiVerificationtype(models.Model):
     
     class Meta:
         db_table = 'verification_types'
-        verbose_name = 'Тип поверки'
-        verbose_name_plural = 'Типы поверки'
+        verbose_name = 'Вид поверки'
+        verbose_name_plural = 'Виды поверки'
 
 class SiVerificationmethod(models.Model):
     id_verification_method = models.AutoField(primary_key=True, db_column='id_verification_method')
@@ -58,22 +58,15 @@ class SiVerificationmethod(models.Model):
 
 class SiAffectingfactors(models.Model):
     id_affecting_factors = models.AutoField(primary_key=True, db_column='id_affecting_factors')
-    temperature = models.CharField(max_length=255, blank=True, null=True, db_column='temperature')
-    humidity = models.CharField(max_length=255, blank=True, null=True, db_column='humidity')
-    pressure = models.CharField(max_length=255, blank=True, null=True, db_column='pressure')
-    voltage = models.CharField(max_length=255, blank=True, null=True, db_column='voltage')
-    frequency = models.CharField(max_length=255, blank=True, null=True, db_column='frequency')
-    harmonic_coefficient = models.CharField(max_length=255, blank=True, null=True, db_column='harmonic_coefficient')
-    liquid_temperature = models.CharField(max_length=255, blank=True, null=True, db_column='liquid_temperature')
-    temperature_change = models.CharField(max_length=255, blank=True, null=True, db_column='temperature_change')
-    pressure_change_rate = models.CharField(max_length=255, blank=True, null=True, db_column='pressure_change_rate')
+    name = models.CharField(max_length=255, db_column='name')
+    description = models.TextField(blank=True, null=True, db_column='description')
     
     def __str__(self):
-        return f"Влияющие факторы #{self.id_affecting_factors}"
+        return self.name
     
     class Meta:
         db_table = 'affecting_factors'
-        verbose_name = 'Влияющие факторы'
+        verbose_name = 'Влияющий фактор'
         verbose_name_plural = 'Влияющие факторы'
 
 class SiMeasurementtype(models.Model):
@@ -91,11 +84,28 @@ class SiMeasurementtype(models.Model):
 
 class SiReference(models.Model):
     id_reference = models.AutoField(primary_key=True, db_column='id_reference')
-    name = models.CharField(max_length=255, db_column='name')
-    description = models.TextField(blank=True, null=True, db_column='description')
+    range = models.CharField(max_length=255, null=True, blank=True)
+    standard_type = models.CharField(max_length=255, null=True, blank=True)
+    brand = models.CharField(max_length=255, null=True, blank=True)
+    fif_registration_number = models.CharField(max_length=255, null=True, blank=True)
+    country_of_manufacturer = models.CharField(max_length=255, null=True, blank=True)
+    manufacturer_name = models.CharField(max_length=255, null=True, blank=True)
+    manufacture_year = models.IntegerField(null=True, blank=True)
+    commissioning_year = models.IntegerField(null=True, blank=True)
+    inventory_number = models.CharField(max_length=255, null=True, blank=True)
+    serial_number = models.CharField(max_length=255, null=True, blank=True)
+    measurement_range = models.CharField(max_length=255, null=True, blank=True)
+    uncertainty = models.CharField(max_length=255, null=True, blank=True)
+    calibration_results_link = models.CharField(max_length=255, null=True, blank=True)
+    calibration_certificate_date = models.DateField(null=True, blank=True)
+    calibration_certificate_validity = models.DateField(null=True, blank=True)
+    calibration_certificate_number = models.CharField(max_length=255, null=True, blank=True)
+    ownership = models.CharField(max_length=255, null=True, blank=True)
+    installation_location = models.CharField(max_length=255, null=True, blank=True)
+    note = models.TextField(null=True, blank=True)
     
     def __str__(self):
-        return self.name
+        return f"{self.brand} - {self.serial_number}"
     
     class Meta:
         db_table = 'references'

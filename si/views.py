@@ -21,19 +21,6 @@ class SiHomeView(LoginRequiredMixin, TemplateView):
         context['references'] = SiReference.objects.all()
         return context
 
-@login_required
-def get_verification_methods(request):
-    """Представление для получения методик поверки"""
-    methods = SiVerificationmethod.objects.all()
-    results = []
-    for method in methods:
-        results.append({
-            'id': method.id_verification_method,
-            'name': method.name,
-            'method_number': method.method_number,
-        })
-    return JsonResponse(results, safe=False)
-
 @method_decorator(login_required, name='dispatch')
 class SiVerificationtypeListView(LoginRequiredMixin, ListView):
     model = SiVerificationtype
@@ -98,6 +85,9 @@ class SiReferenceListView(LoginRequiredMixin, ListView):
     template_name = 'si/reference_list.html'
     context_object_name = 'references'
 
+    def get_queryset(self):
+        return SiReference.objects.all().order_by('standard_type', 'brand')
+
 @method_decorator(login_required, name='dispatch')
 class SiReferenceCreateView(LoginRequiredMixin, CreateView):
     model = SiReference
@@ -117,3 +107,8 @@ class SiReferenceDeleteView(LoginRequiredMixin, DeleteView):
     model = SiReference
     template_name = 'si/reference_confirm_delete.html'
     success_url = reverse_lazy('si:reference_list')
+
+def get_verification_methods(request):
+    methods = SiVerificationmethod.objects.all()
+    data = [{'id': method.id_verification_method, 'name': method.name} for method in methods]
+    return JsonResponse(data, safe=False)
