@@ -58,11 +58,18 @@ class SiVerificationmethod(models.Model):
 
 class SiAffectingfactors(models.Model):
     id_affecting_factors = models.AutoField(primary_key=True, db_column='id_affecting_factors')
-    name = models.CharField(max_length=255, db_column='name')
-    description = models.TextField(blank=True, null=True, db_column='description')
+    temperature = models.CharField(max_length=255, null=True, blank=True)
+    humidity = models.CharField(max_length=255, null=True, blank=True)
+    pressure = models.CharField(max_length=255, null=True, blank=True)
+    voltage = models.CharField(max_length=255, null=True, blank=True)
+    frequency = models.CharField(max_length=255, null=True, blank=True)
+    harmonic_coefficient = models.CharField(max_length=255, null=True, blank=True)
+    liquid_temperature = models.CharField(max_length=255, null=True, blank=True)
+    temperature_change = models.CharField(max_length=255, null=True, blank=True)
+    pressure_change_rate = models.CharField(max_length=255, null=True, blank=True)
     
     def __str__(self):
-        return self.name
+        return f"Фактор #{self.id_affecting_factors}"
     
     class Meta:
         db_table = 'affecting_factors'

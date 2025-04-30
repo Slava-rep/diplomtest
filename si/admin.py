@@ -27,8 +27,9 @@ class SiVerificationmethodAdmin(admin.ModelAdmin):
 
 @admin.register(SiAffectingfactors)
 class SiAffectingfactorsAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description')
-    search_fields = ('name', 'description')
+    list_display = ('temperature', 'humidity', 'pressure', 'voltage', 'frequency')
+    search_fields = ('temperature', 'humidity', 'pressure', 'voltage', 'frequency')
+    list_filter = ('temperature', 'humidity', 'pressure')
 
 @admin.register(SiReference)
 class SiReferenceAdmin(admin.ModelAdmin):

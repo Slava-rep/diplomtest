@@ -125,10 +125,38 @@ from django.forms import ModelForm
 class AffectingFactorsForm(forms.ModelForm):
     class Meta:
         model = SiAffectingfactors
-        fields = ['name', 'description']
+        fields = [
+            'temperature',
+            'humidity',
+            'pressure',
+            'voltage',
+            'frequency',
+            'harmonic_coefficient',
+            'liquid_temperature',
+            'temperature_change',
+            'pressure_change_rate'
+        ]
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'temperature': forms.TextInput(attrs={'class': 'form-control'}),
+            'humidity': forms.TextInput(attrs={'class': 'form-control'}),
+            'pressure': forms.TextInput(attrs={'class': 'form-control'}),
+            'voltage': forms.TextInput(attrs={'class': 'form-control'}),
+            'frequency': forms.TextInput(attrs={'class': 'form-control'}),
+            'harmonic_coefficient': forms.TextInput(attrs={'class': 'form-control'}),
+            'liquid_temperature': forms.TextInput(attrs={'class': 'form-control'}),
+            'temperature_change': forms.TextInput(attrs={'class': 'form-control'}),
+            'pressure_change_rate': forms.TextInput(attrs={'class': 'form-control'})
+        }
+        labels = {
+            'temperature': 'Температура',
+            'humidity': 'Влажность',
+            'pressure': 'Давление',
+            'voltage': 'Напряжение',
+            'frequency': 'Частота',
+            'harmonic_coefficient': 'Коэффициент гармоник',
+            'liquid_temperature': 'Температура жидкости',
+            'temperature_change': 'Изменение температуры',
+            'pressure_change_rate': 'Скорость изменения давления'
         }
 
 class CertificateForm(forms.ModelForm):             

@@ -3,9 +3,9 @@
 
 {% block title %}
     {% if form.instance.pk %}
-        Редактирование влияющего фактора
+        Редактировать влияющие факторы
     {% else %}
-        Новый влияющий фактор
+        Добавить влияющие факторы
     {% endif %}
 {% endblock %}
 
@@ -14,28 +14,34 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header bg-light">
+                <div class="card-header">
                     <h4 class="mb-0">
                         {% if form.instance.pk %}
-                            <i class="fas fa-edit"></i> Редактирование влияющего фактора
+                            <i class="fas fa-edit"></i> Редактировать влияющие факторы
                         {% else %}
-                            <i class="fas fa-plus"></i> Новый влияющий фактор
+                            <i class="fas fa-plus"></i> Добавить влияющие факторы
                         {% endif %}
                     </h4>
                 </div>
                 <div class="card-body">
                     <form method="post" novalidate>
                         {% csrf_token %}
-                        
-                        <div class="form-group mb-3">
-                            {{ form.name|as_crispy_field }}
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form.temperature|as_crispy_field }}
+                                {{ form.humidity|as_crispy_field }}
+                                {{ form.pressure|as_crispy_field }}
+                                {{ form.voltage|as_crispy_field }}
+                                {{ form.frequency|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.harmonic_coefficient|as_crispy_field }}
+                                {{ form.liquid_temperature|as_crispy_field }}
+                                {{ form.temperature_change|as_crispy_field }}
+                                {{ form.pressure_change_rate|as_crispy_field }}
+                            </div>
                         </div>
-                        
-                        <div class="form-group mb-3">
-                            {{ form.description|as_crispy_field }}
-                        </div>
-
-                        <div class="d-flex justify-content-between mt-4">
+                        <div class="mt-3">
                             <a href="{% url 'si:affectingfactors_list' %}" class="btn btn-secondary">
                                 <i class="fas fa-arrow-left"></i> Назад
                             </a>
