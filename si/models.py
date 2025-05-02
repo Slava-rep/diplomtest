@@ -4,14 +4,26 @@ from django.contrib.auth.models import User
 
 class SiSitype(models.Model):
     id_SI_type = models.AutoField(primary_key=True, db_column='id_SI_type')
-    name = models.CharField(max_length=255)
-    description = models.TextField(blank=True, null=True)
+    gov_registry_number = models.CharField(max_length=255, null=True, blank=True)
+    si_name = models.CharField(max_length=255, null=True, blank=True)
+    type_designation = models.CharField(max_length=255, null=True, blank=True)
+    manufacturer = models.CharField(max_length=255, null=True, blank=True)
+    record_number = models.CharField(max_length=255, null=True, blank=True)
+    publication_date = models.DateField(null=True, blank=True)
+    description_document = models.TextField(null=True, blank=True)
+    calibration_method_document = models.TextField(null=True, blank=True)
+    procedure = models.CharField(max_length=255, default='Standard')
+    certificate_term = models.DateField(null=True, blank=True)
+    periodic_calibration = models.BooleanField(default=False)
+    serial_number = models.CharField(max_length=255, null=True, blank=True)
+    status = models.CharField(max_length=255, default='active')
+    verification_method = models.ForeignKey('SiVerificationmethod', on_delete=models.CASCADE, db_column='verification_method_id')
     
     def __str__(self):
-        return self.name
+        return f"{self.si_name} ({self.gov_registry_number})"
     
     class Meta:
-        db_table = 'si_type'
+        db_table = 'si_types'
         verbose_name = 'Тип СИ'
         verbose_name_plural = 'Типы СИ'
 
@@ -24,7 +36,7 @@ class SiSi(models.Model):
     si_type_id = models.ForeignKey(SiSitype, on_delete=models.CASCADE, db_column='si_type_id')
     
     def __str__(self):
-        return f"{self.registration_number} - {self.si_type_id.name}"
+        return f"{self.registration_number} - {self.si_type_id.si_name}"
     
     class Meta:
         db_table = 'si'

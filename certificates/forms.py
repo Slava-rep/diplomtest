@@ -198,15 +198,25 @@ class CertificateForm(forms.ModelForm):
                 }
             ),
             'next_verification_date': DateInput(attrs={
-                'type': 'date',
                 'class': 'form-control',
                 'readonly': True
             }),
             'verification_type': forms.Select(attrs={'class': 'form-control'}),
-            'si': forms.Select(attrs={
-                'class': 'select2',
-                'data-url': '/api/si-autocomplete/'
-            }),
+            'si': forms.Select(attrs={'class': 'form-control'}),
+            'verification_method': forms.Select(attrs={'class': 'form-control'}),
+            'affecting_factors': forms.Select(attrs={'class': 'form-control'}),
+            'gov_reg_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'inventory_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'modification': forms.TextInput(attrs={'class': 'form-control'}),
+            'status': forms.Select(attrs={'class': 'form-control'}),
+            'number': forms.TextInput(attrs={'class': 'form-control'}),
+            'organization_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'inn': forms.TextInput(attrs={'class': 'form-control'}),
+            'department_head': forms.TextInput(attrs={'class': 'form-control'}),
+            'verifier': forms.TextInput(attrs={'class': 'form-control'}),
+            'composition': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'protocol': forms.TextInput(attrs={'class': 'form-control'}),
+            'comment': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
         }
         help_texts = {
             'gov_reg_number': "Номер в государственном реестре (пример: 88375-23)",
@@ -214,21 +224,15 @@ class CertificateForm(forms.ModelForm):
         }
     
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)  # Получаем пользователя
+        self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-        # Пример кастомизации queryset
-        # Фильтрация СИ для обычных пользователей
-        if self.user and not self.user.is_superuser:
-            employee = getattr(self.user, 'employee', None)
-            if employee:
-                # Получаем разрешенные типы измерений
-                measurement_types = employee.measurement_types.all()
-                # Фильтруем СИ по связанным типам
-                self.fields['si'].queryset = SiSi.objects.filter(
-                    type__measurement_types__in=measurement_types
-                ).distinct()
         
         # Настройка виджетов
-        self.fields['si'].queryset = SiSi.objects.all()
+        self.fields['si'].queryset = SiSi.objects.all().select_related('si_type_id')
         self.fields['verification_type'].queryset = SiVerificationtype.objects.all().order_by('name')
         self.fields['verification_method'].queryset = SiVerificationmethod.objects.all().order_by('name')
+        
+        # Добавляем подсказки для полей
+        self.fields['si'].help_text = "Выберите средство измерений из списка"
+        self.fields['verification_type'].help_text = "Выберите тип поверки"
+        self.fields['verification_method'].help_text = "Выберите метод поверки"

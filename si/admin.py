@@ -12,8 +12,9 @@ class SiSiAdmin(admin.ModelAdmin):
 
 @admin.register(SiSitype)
 class SiSitypeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description')
-    search_fields = ('name',)
+    list_display = ('si_name', 'gov_registry_number', 'manufacturer', 'status')
+    search_fields = ('si_name', 'gov_registry_number', 'manufacturer')
+    list_filter = ('status', 'periodic_calibration')
 
 @admin.register(SiVerificationtype)
 class SiVerificationtypeAdmin(admin.ModelAdmin):
