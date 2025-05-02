@@ -52,9 +52,9 @@
         {% if start_date or end_date %}
         <div class="date-range">
             Период: 
-            {% if start_date %}{{ start_date }}{% else %}начало не указано{% endif %}
+            {% if start_date %}{{ start_date|date:"d.m.Y" }}{% else %}начало не указано{% endif %}
             - 
-            {% if end_date %}{{ end_date }}{% else %}конец не указан{% endif %}
+            {% if end_date %}{{ end_date|date:"d.m.Y" }}{% else %}конец не указан{% endif %}
         </div>
         {% endif %}
     </div>
@@ -66,7 +66,8 @@
                 <th>Дата поступления</th>
                 <th>Тип СИ</th>
                 <th>Диапазон измерений</th>
-                <th>Погрешность</th>
+                <th>Год выпуска</th>
+                <th>Изготовитель</th>
                 <th>Заводской номер</th>
                 <th>Результат</th>
                 <th>Дата поверки</th>
@@ -76,13 +77,14 @@
             {% for entry in entries %}
             <tr>
                 <td>{{ forloop.counter }}</td>
-                <td>{{ entry.receipt_date|date:"d.m.Y" }}</td>
-                <td>{{ entry.si.type }}</td>
-                <td>{{ entry.si.measurement_range }}</td>
-                <td>{{ entry.error }}</td>
-                <td>{{ entry.si.serial_number }}</td>
-                <td>{{ entry.get_result_display }}</td>
-                <td>{{ entry.verification_date|date:"d.m.Y" }}</td>
+                <td>{{ entry.certificate.verification_date|date:"d.m.Y" }}</td>
+                <td>{{ entry.si.si_type_id.name|default:"-" }}</td>
+                <td>{{ entry.si.measurement_range|default:"-" }}</td>
+                <td>{{ entry.si.manufacture_year|default:"-" }}</td>
+                <td>{{ entry.si.si_type_id.manufacturer|default:"-" }}</td>
+                <td>{{ entry.si.serial_number|default:"-" }}</td>
+                <td>{{ entry.verification_result }}</td>
+                <td>{{ entry.certificate.verification_date|date:"d.m.Y" }}</td>
             </tr>
             {% endfor %}
         </tbody>

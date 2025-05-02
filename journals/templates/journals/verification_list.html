@@ -35,7 +35,8 @@
                     <th>Дата поступления</th>
                     <th>Тип СИ</th>
                     <th>Диапазон измерений</th>
-                    <th>Погрешность</th>
+                    <th>Год выпуска</th>
+                    <th>Изготовитель</th>
                     <th>Заводской номер</th>
                     <th>Результат</th>
                     <th>Дата поверки</th>
@@ -45,13 +46,14 @@
                 {% for entry in object_list %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
-                    <td>{{ entry.receipt_date|date:"d.m.Y" }}</td>
-                    <td>{{ entry.si.type }}</td>
-                    <td>{{ entry.si.measurement_range }}</td>
-                    <td>{{ entry.error }}</td>
-                    <td>{{ entry.si.serial_number }}</td>
-                    <td>{{ entry.get_result_display }}</td>
-                    <td>{{ entry.verification_date|date:"d.m.Y" }}</td>
+                    <td>{{ entry.certificate.verification_date|date:"d.m.Y" }}</td>
+                    <td>{{ entry.si.si_type_id.si_name|default:"-" }}</td>
+                    <td>{{ entry.si.measurement_range|default:"-" }}</td>
+                    <td>{{ entry.si.year_of_manufacture|default:"-" }}</td>
+                    <td>{{ entry.si.si_type_id.manufacturer|default:"-" }}</td>
+                    <td>{{ entry.si.serial_number|default:"-" }}</td>
+                    <td>{{ entry.verification_result }}</td>
+                    <td>{{ entry.certificate.verification_date|date:"d.m.Y" }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

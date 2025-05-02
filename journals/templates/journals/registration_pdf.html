@@ -52,9 +52,9 @@
         {% if start_date or end_date %}
         <div class="date-range">
             Период: 
-            {% if start_date %}{{ start_date|date:"d F Y г." }}{% else %}начало не указано{% endif %}
+            {% if start_date %}{{ start_date|date:"d.m.Y" }}{% else %}начало не указано{% endif %}
             - 
-            {% if end_date %}{{ end_date|date:"d F Y г." }}{% else %}конец не указан{% endif %}
+            {% if end_date %}{{ end_date|date:"d.m.Y" }}{% else %}конец не указан{% endif %}
         </div>
         {% endif %}
     </div>
@@ -68,6 +68,9 @@
                 <th>Заводской номер</th>
                 <th>Год выпуска</th>
                 <th>Изготовитель</th>
+                <th>Подпись принявшего</th>
+                <th>Дата выдачи</th>
+                <th>Подпись выдавшего</th>
                 <th>Примечание</th>
             </tr>
         </thead>
@@ -76,11 +79,14 @@
             <tr>
                 <td>{{ forloop.counter }}</td>
                 <td>{{ entry.receipt_date|date:"d.m.Y" }}</td>
-                <td>{{ entry.si.type }}</td>
-                <td>{{ entry.si.serial_number }}</td>
-                <td>{{ entry.si.year_of_manufacture }}</td>
-                <td>{{ entry.si.manufacturer }}</td>
-                <td>{{ entry.note }}</td>
+                <td>{{ entry.si.si_type_id.name|default:"-" }}</td>
+                <td>{{ entry.si.serial_number|default:"-" }}</td>
+                <td>{{ entry.si.manufacture_year|default:"-" }}</td>
+                <td>{{ entry.si.si_type_id.manufacturer|default:"-" }}</td>
+                <td>{{ entry.receipt_signature|default:"-" }}</td>
+                <td>{{ entry.issue_date|date:"d.m.Y"|default:"-" }}</td>
+                <td>{{ entry.issue_signature|default:"-" }}</td>
+                <td>{{ entry.note|default:"-" }}</td>
             </tr>
             {% endfor %}
         </tbody>
