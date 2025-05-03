@@ -2,6 +2,15 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    .actions-col {
+        width: 340px; /* Примерно по 110px на кнопку + отступы */
+        white-space: nowrap;
+    }
+    .actions-col .btn-sm {
+        width: 170px;
+    }
+</style>
 <div class="container mt-4">
     <!-- Панель с кнопками -->
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -26,7 +35,7 @@
                 <th>Номер</th>
                 <th>Дата поверки</th>
                 <th>СИ</th>
-                <th>Действия</th>
+                <th class="actions-col">Действия</th>
             </tr>
         </thead>
         <tbody>
@@ -35,7 +44,7 @@
                 <td>{{ certificate.number }}</td>
                 <td>{{ certificate.verification_date|date:"d.m.Y" }}</td>
                 <td>{{ certificate.si }}</td>
-                <td>
+                <td class="actions-col">
                     <a href="{% url 'certificates:create_from_example' certificate.id %}" class="btn btn-primary btn-sm">
                         <i class="bi bi-files"></i> Создать по примеру
                     </a>

@@ -8,9 +8,10 @@ from .models import (
 class SiVerificationtypeForm(forms.ModelForm):
     class Meta:
         model = SiVerificationtype
-        fields = ['name']
+        fields = ['name', 'description']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
         }
 
 class SiVerificationmethodForm(forms.ModelForm):

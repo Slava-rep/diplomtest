@@ -46,6 +46,8 @@ class SiSi(models.Model):
 class SiVerificationtype(models.Model):
     id_verification_type = models.AutoField(primary_key=True, db_column='id_verification_type')
     name = models.CharField(max_length=255, db_column='name')
+    description = models.TextField(blank=True, null=True, db_column='description')
+
     
     def __str__(self):
         return self.name

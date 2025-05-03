@@ -27,6 +27,9 @@ urlpatterns = [
     
     # Verification Types
     path('verification-types/', views.SiVerificationtypeListView.as_view(), name='verificationtype_list'),
+    path('verification-types/add/', views.SiVerificationtypeCreateView.as_view(), name='verificationtype_create'),
+    path('verification-types/delete/<int:pk>/', views.SiVerificationtypeDeleteView.as_view(), name='verificationtype_delete'),
+    path('verification-types/<int:pk>/update/', views.SiVerificationtypeUpdateView.as_view(), name='verificationtype_update'),
     
     # Verification Methods
     path('verification-methods/', views.SiVerificationmethodListView.as_view(), name='verificationmethod_list'),

@@ -6,7 +6,7 @@ from django.urls import reverse_lazy
 from django.http import JsonResponse
 from .models import SiVerificationtype, SiVerificationmethod, SiAffectingfactors, SiReference
 from .forms import (
-    SiVerificationmethodForm, SiAffectingfactorsForm, SiReferenceForm
+    SiVerificationmethodForm, SiAffectingfactorsForm, SiReferenceForm, SiVerificationtypeForm
 )
 from django.utils.decorators import method_decorator
 
@@ -26,6 +26,26 @@ class SiVerificationtypeListView(LoginRequiredMixin, ListView):
     model = SiVerificationtype
     template_name = 'si/verificationtype_list.html'
     context_object_name = 'verification_types'
+
+@method_decorator(login_required, name='dispatch')
+class SiVerificationtypeCreateView(LoginRequiredMixin, CreateView):
+    model = SiVerificationtype
+    form_class = SiVerificationtypeForm
+    template_name = 'si/verificationtype_form.html'
+    success_url = reverse_lazy('si:verificationtype_list')
+
+@method_decorator(login_required, name='dispatch')
+class SiVerificationtypeDeleteView(LoginRequiredMixin, DeleteView):
+    model = SiVerificationtype
+    template_name = 'si/verificationtype_confirm_delete.html'
+    success_url = reverse_lazy('si:verificationtype_list')
+
+@method_decorator(login_required, name='dispatch')
+class SiVerificationtypeUpdateView(LoginRequiredMixin, UpdateView):
+    model = SiVerificationtype
+    form_class = SiVerificationtypeForm
+    template_name = 'si/verificationtype_form.html'
+    success_url = reverse_lazy('si:verificationtype_list')
 
 @method_decorator(login_required, name='dispatch')
 class SiVerificationmethodListView(LoginRequiredMixin, ListView):
