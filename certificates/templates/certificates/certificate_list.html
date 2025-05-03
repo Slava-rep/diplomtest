@@ -49,7 +49,10 @@
                         <a href="{% url 'certificates:create_from_example' certificate.id %}" class="btn btn-sm btn-outline-primary">
                             <i class="fas fa-edit"></i> Изменить
                         </a>
-                        <a href="{% url 'certificates:print' certificate.id %}" class="btn btn-sm btn-outline-danger" target="_blank">
+                        <a href="{% url 'certificates:print' certificate.id %}" class="btn btn-sm btn-outline-info" target="_blank">
+                            <i class="fas fa-print"></i> Печать
+                        </a>
+                        <a href="{% url 'certificates:delete' certificate.id %}" class="btn btn-sm btn-outline-danger">
                             <i class="fas fa-trash"></i> Удалить
                         </a>
                     </div>

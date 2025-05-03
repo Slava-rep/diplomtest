@@ -1,39 +1,181 @@
 <!-- diplomtest/certificates/templates/certificates/print.html -->
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Свидетельство № {{ object.number }}</title>
+    <meta charset="utf-8">
+    <title>{% if certificate %}Свидетельство о поверке № {{ certificate.number }}{% else %}Бланк свидетельства о поверке{% endif %}</title>
     <style>
+        @page {
+            size: A4 landscape;
+            margin: 0;
+        }
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            font-size: 9pt;
+            line-height: 1.2;
+            width: 50%;
+            padding: 0.2cm 1cm 0.5cm 1cm;
+            box-sizing: border-box;
         }
-        h1 {
+        .header {
             text-align: center;
+            margin-bottom: 10px;
         }
-        p {
+        .header img {
+            max-width: 60px;
+            height: auto;
+        }
+        .header h1 {
+            font-size: 10pt;
             margin: 5px 0;
+            text-transform: uppercase;
+        }
+        .header p {
+            font-size: 7pt;
+            margin: 2px 0;
+        }
+        .certificate-number {
+            text-align: center;
+            margin: 10px 0;
+            font-size: 9pt;
+            font-weight: bold;
+        }
+        .valid-until {
+            text-align: right;
+            margin: 5px 0;
+            font-size: 9pt;
+        }
+        .content {
+            margin: 8px 0;
         }
         .field {
-            margin-bottom: 10px;
+            margin: 5px 0;
+        }
+        .field-name {
+            font-size: 7pt;
+            color: #000;
+        }
+        .field-value {
+            font-weight: normal;
+            margin-top: 1px;
+            font-size: 9pt;
+        }
+        .footer {
+            margin-top: 15px;
+            font-size: 9pt;
+        }
+        .signature {
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 9pt;
+        }
+        .verification-mark {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .small-text {
+            font-size: 6pt;
+            color: #666;
+            font-style: italic;
+        }
+        .verification-mark-space {
+            width: 40px;
+            height: 40px;
+            margin-left: 10px;
         }
     </style>
 </head>
 <body>
-    <h1>Свидетельство № {{ object.number }}</h1>
-    <div class="field">
-        <strong>Дата поверки:</strong> {{ object.verification_date|date:"d.m.Y" }}
+    <div class="header">
+        <img src="file:///C:/diplom/diplomtest/static/images/logo-new.jpg" alt="Логотип" style="max-width: 60px; height: auto;">
+        <h1>Федеральное агентство по техническому регулированию и метрологии</h1>
+        <p>Федеральное бюджетное учреждение<br>
+        «Государственный региональный центр стандартизации,<br>
+        метрологии и испытаний»</p>
+        <p>RA.RU.311320</p>
     </div>
-    <div class="field">
-        <strong>СИ:</strong> {{ object.si }}
+
+    <div class="certificate-number">
+        СВИДЕТЕЛЬСТВО О ПОВЕРКЕ № {% if certificate %}{{ certificate.number }}{% else %}_____________{% endif %}
     </div>
-    <div class="field">
-        <strong>Результат поверки:</strong> {{ object.get_verification_result_display }}
+
+    <div class="valid-until">
+        Действительно до {% if certificate %}{{ certificate.valid_until|date:"d E Y г." }}{% else %}______________{% endif %}
     </div>
-    <div class="field">
-        <strong>Комментарий:</strong> {{ object.comment }}
+
+    <div class="content">
+        <div class="field">
+            <div class="field-name">Средство измерений</div>
+            <div class="field-value">{% if certificate %}{{ certificate.si.type }}{% else %}_______________________{% endif %}</div>
+            <div class="small-text">наименование, тип, модификация</div>
+        </div>
+
+        <div class="field">
+            <div class="field-name">Заводской номер</div>
+            <div class="field-value">{% if certificate %}{{ certificate.si.serial_number }}{% else %}_______________________{% endif %}</div>
+        </div>
+
+        <div class="field">
+            <div class="field-name">Поверено</div>
+            <div class="field-value" style="font-size: 7pt;">В полном объеме</div>
+            <div class="small-text">наименование величин, диапазонов, на которых поверено средство измерений</div>
+        </div>
+
+        <div class="field">
+            <div class="field-name">В соответствии с</div>
+            <div class="field-value">{% if certificate %}{{ certificate.verification_method }}{% else %}_______________________{% endif %}</div>
+            <div class="small-text">наименование документа, на основании которого выполнена поверка</div>
+        </div>
+
+        <div class="field">
+            <div class="field-name">С применением эталонов</div>
+            <div class="field-value">{% if certificate %}{{ certificate.standards }}{% else %}_______________________{% endif %}</div>
+            <div class="small-text">наименование, тип, заводской номер, регистрационный номер</div>
+        </div>
+
+        <div class="field">
+            <div class="field-name">При следующих значениях влияющих факторов</div>
+            <div class="field-value">
+                температура {% if certificate %}{{ certificate.temperature }}{% else %}___{% endif %}°С,
+                влажность {% if certificate %}{{ certificate.humidity }}{% else %}___{% endif %}%,
+                давление {% if certificate %}{{ certificate.pressure }}{% else %}___{% endif %} кПа
+            </div>
+            <div class="small-text">перечень влияющих факторов, с указанием их значений</div>
+            <div class="small-text" style="margin-top: 0; font-size: 9pt; color: #000;">
+                и на основании результатов первичной поверки признано пригодным к применению.
+            </div>
+        </div>
     </div>
-    <!-- Добавьте остальные поля -->
+
+    <div class="footer">
+        <div class="signature">
+            <div>
+                <p>Поверитель</p>
+                <p>_________________</p>
+                <div class="small-text">подпись</div>
+            </div>
+            <div>
+                <p>Начальник отдела</p>
+                <p>_________________</p>
+                <div class="small-text">подпись</div>
+            </div>
+        </div>
+
+        <div class="verification-mark">
+            <div>
+                <p>Знак поверки</p>
+            </div>
+            <div class="verification-mark-space"></div>
+        </div>
+
+        <div style="margin-top: 10px;">
+            <p>Дата поверки: {% if certificate %}{{ certificate.verification_date|date:"d E Y г." }}{% else %}______________{% endif %}</p>
+        </div>
+    </div>
 </body>
 </html>
 

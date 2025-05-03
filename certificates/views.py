@@ -183,7 +183,7 @@ from django.template.loader import get_template, render_to_string
 from django.utils.dateparse import parse_date
 from xhtml2pdf import pisa
 from weasyprint import HTML
-from weasyprint.text.fonts import FontConfiguration
+# from weasyprint.text.fonts import FontConfiguration
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
