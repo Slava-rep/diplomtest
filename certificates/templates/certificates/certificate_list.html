@@ -4,11 +4,11 @@
 {% block content %}
 <style>
     .actions-col {
-        width: 340px; /* Примерно по 110px на кнопку + отступы */
+        width: 230px;
         white-space: nowrap;
     }
     .actions-col .btn-sm {
-        width: 170px;
+        width: 110px;
     }
 </style>
 <div class="container mt-4">
@@ -45,12 +45,14 @@
                 <td>{{ certificate.verification_date|date:"d.m.Y" }}</td>
                 <td>{{ certificate.si }}</td>
                 <td class="actions-col">
-                    <a href="{% url 'certificates:create_from_example' certificate.id %}" class="btn btn-primary btn-sm">
-                        <i class="bi bi-files"></i> Создать по примеру
-                    </a>
-                    <a href="{% url 'certificates:print' certificate.id %}" class="btn btn-secondary btn-sm" target="_blank">
-                        <i class="bi bi-printer"></i> Печать
-                    </a>
+                    <div class="btn-group" role="group">
+                        <a href="{% url 'certificates:create_from_example' certificate.id %}" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-edit"></i> Изменить
+                        </a>
+                        <a href="{% url 'certificates:print' certificate.id %}" class="btn btn-sm btn-outline-danger" target="_blank">
+                            <i class="fas fa-trash"></i> Удалить
+                        </a>
+                    </div>
                 </td>
             </tr>
             {% endfor %}

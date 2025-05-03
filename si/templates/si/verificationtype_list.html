@@ -45,12 +45,14 @@
                             <td class="name-column">{{ type.name }}</td>
                             <td>{{ type.description|default:"-" }}</td>
                             <td class="action-buttons">
-                                <a href="{% url 'si:verificationtype_update' type.pk %}" class="btn btn-primary btn-sm me-1">
-                                    <i class="fas fa-edit"></i> Редактировать
-                                </a>
-                                <a href="{% url 'si:verificationtype_delete' type.pk %}" class="btn btn-danger btn-sm" onclick="return confirm('Удалить тип поверки?');">
-                                    <i class="fas fa-trash"></i> Удалить
-                                </a>
+                                <div class="btn-group" role="group">
+                                    <a href="{% url 'si:verificationtype_update' type.pk %}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-edit"></i> Изменить
+                                    </a>
+                                    <a href="{% url 'si:verificationtype_delete' type.pk %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Удалить тип поверки?');">
+                                        <i class="fas fa-trash"></i> Удалить
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     {% endfor %}
