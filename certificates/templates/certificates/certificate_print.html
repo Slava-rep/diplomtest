@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,7 +14,7 @@
             font-size: 9pt;
             line-height: 1.3;
             width: 50%;
-            padding: 1cm;
+            padding: 0.2cm 1cm 1cm 1cm;
             box-sizing: border-box;
         }
         .header {
@@ -88,8 +89,9 @@
     </style>
 </head>
 <body>
+    {% load static %}
     <div class="header">
-        <img src="/static/images/rostest.png" alt="Логотип">
+        <img src="file:///C:/diplom/diplomtest/static/images/logo-new.jpg" alt="Логотип" style="max-width: 80px; height: auto;">
         <h1>Федеральное агентство по техническому регулированию и метрологии</h1>
         <p>Федеральное бюджетное учреждение<br>
         «Государственный региональный центр стандартизации,<br>
@@ -143,12 +145,13 @@
                 давление {{ certificate.pressure|default:"___" }} кПа
             </div>
             <div class="small-text">перечень влияющих факторов, с указанием их значений</div>
+            <div class="small-text" style="margin-top: 0; font-size: 9pt; color: #000;">
+                и на основании результатов первичной поверки признано пригодным к применению.
+            </div>
         </div>
     </div>
 
     <div class="footer">
-        <p>и на основании результатов первичной поверки признано пригодным к применению.</p>
-        
         <div class="signature">
             <div>
                 <p>Поверитель</p>
