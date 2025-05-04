@@ -37,5 +37,6 @@ urlpatterns = [
     path('create-from-example/<int:pk>/', views.CertificateCreateFromExampleView.as_view(), name='create_from_example'),
     path('detail/<int:pk>/', views.CertificateDetailView.as_view(), name='detail'),
     path('temperature/create/', views.TemperatureCertificateCreateView.as_view(), name='temperature_create'),
+    path('delete/<int:pk>/', views.CertificateDeleteView.as_view(), name='delete'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

@@ -168,7 +168,7 @@
 # diplomtest/certificates/views.py
 from datetime import timezone
 from django.contrib.auth.mixins import UserPassesTestMixin
-from django.views.generic import CreateView, DetailView, ListView
+from django.views.generic import CreateView, DetailView, ListView, DeleteView
 from si.models import SiAffectingfactors
 from utils.decorators import measurement_type_required
 from .forms import CertificateForm, AffectingFactorsForm
@@ -183,9 +183,10 @@ from django.template.loader import get_template, render_to_string
 from django.utils.dateparse import parse_date
 from xhtml2pdf import pisa
 from weasyprint import HTML
-# from weasyprint.text.fonts import FontConfiguration
+from weasyprint.fonts import FontConfiguration
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
 
 User = get_user_model()
 
@@ -316,3 +317,7 @@ def print_certificate(request, pk=None):
     response['Content-Disposition'] = 'inline; filename="certificate.pdf"'
     response.write(pdf)
     return response
+class CertificateDeleteView(DeleteView):
+    model = CertificatesCertificate
+    template_name = 'certificates/certificate_confirm_delete.html'
+    success_url = reverse_lazy('certificates:list')
