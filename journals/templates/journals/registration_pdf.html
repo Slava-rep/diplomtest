@@ -79,9 +79,9 @@
             <tr>
                 <td>{{ forloop.counter }}</td>
                 <td>{{ entry.receipt_date|date:"d.m.Y" }}</td>
-                <td>{{ entry.si.si_type_id.name|default:"-" }}</td>
+                <td>{{ entry.si.si_type_id.si_name|default:"-" }}</td>
                 <td>{{ entry.si.serial_number|default:"-" }}</td>
-                <td>{{ entry.si.manufacture_year|default:"-" }}</td>
+                <td>{{ entry.si.year_of_manufacture|default:"-" }}</td>
                 <td>{{ entry.si.si_type_id.manufacturer|default:"-" }}</td>
                 <td>{{ entry.receipt_signature|default:"-" }}</td>
                 <td>{{ entry.issue_date|date:"d.m.Y"|default:"-" }}</td>

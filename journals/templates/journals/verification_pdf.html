@@ -65,7 +65,6 @@
                 <th>№ п/п</th>
                 <th>Дата поступления</th>
                 <th>Тип СИ</th>
-                <th>Диапазон измерений</th>
                 <th>Год выпуска</th>
                 <th>Изготовитель</th>
                 <th>Заводской номер</th>
@@ -78,9 +77,8 @@
             <tr>
                 <td>{{ forloop.counter }}</td>
                 <td>{{ entry.certificate.verification_date|date:"d.m.Y" }}</td>
-                <td>{{ entry.si.si_type_id.name|default:"-" }}</td>
-                <td>{{ entry.si.measurement_range|default:"-" }}</td>
-                <td>{{ entry.si.manufacture_year|default:"-" }}</td>
+                <td>{{ entry.si.si_type_id.si_name|default:"-" }}</td>
+                <td>{{ entry.si.year_of_manufacture|default:"-" }}</td>
                 <td>{{ entry.si.si_type_id.manufacturer|default:"-" }}</td>
                 <td>{{ entry.si.serial_number|default:"-" }}</td>
                 <td>{{ entry.verification_result }}</td>
