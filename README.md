@@ -48,7 +48,3 @@ docker-compose exec web python manage.py createsuperuser
 - `journals/` - приложение для управления журналами
 - `users/` - приложение для управления пользователями
 - `utils/` - приложение с общими утилитами
-
-## Лицензия
-
-MIT
